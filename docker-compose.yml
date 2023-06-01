@@ -28,6 +28,8 @@ services:
       - ./:/var/www/html
     networks:
       - app_network
+      labels:
+        kompose.service.type: LoadBalancer
 
   db:
     image: mysql:5.7
