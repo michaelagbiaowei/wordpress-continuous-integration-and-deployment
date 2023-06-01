@@ -22,9 +22,9 @@ services:
       - 8080:80
     environment:
       WORDPRESS_DB_HOST: ${DB_HOST}:${DB_PORT}
-      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_USERNAME: ${DB_USERNAME}
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
-      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_NAME: ${DB_DATABASE}
     volumes: 
       - ./:/var/www/html
     networks:
@@ -37,8 +37,8 @@ services:
     container_name: ${DB_CONTAINER}
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_RANDOM_ROOT_PASSWORD: ${RANDOM_ROOT_PASSWORD}
     volumes:
