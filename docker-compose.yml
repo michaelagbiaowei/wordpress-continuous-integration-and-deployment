@@ -1,51 +1,59 @@
 version: '3.1'
 
 services:
-  webserver:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./:/var/www/html
-      - ./nginx.conf:/etc/nginx/nginx.conf
+  # webserver:
+  #   # build: ./path to the Dockerfile
+  #   image: nginx:${NGINX_VERSION}
+  #   container_name: ${NGINX_CONTAINER}
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./:/var/www/html
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   networks:
+  #     - app_network
+
+  php:
+    image: php:latest
+
     networks:
       - app_network
+    environment:
+      - LOCAL_PHP_XDEBUG=false
+      - XDEBUG_MODE=develop,debug
+      - LOCAL_PHP_MEMCACHED=false
+      - PHP_FPM_UID=1000
+      - PHP_FPM_GID=1000
+      - GITHUB_REF=false
+      - GITHUB_EVENT_NAME=false
+    volumes:
+      - ./php-config.ini:/usr/local/etc/php/conf.d/php-config.ini
+      - ./:/var/www/html
+    init: true
+
+    extra_hosts:
+      - localhost:host-gateway
 
   wordpress:
-    depends_on: 
-      - db
+    depends_on:
+      - php
     image: wordpress:latest
     container_name: wordpress
     restart: unless-stopped
     ports:
       - 8080:80
     environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: test
-      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_HOST: database-1.c4v46hctkald.us-east-1.rds.amazonaws.com
+      WORDPRESS_DB_USERNAME: test
+      WORDPRESS_DB_PASSWORD: Ifiekemi1990
       WORDPRESS_DB_NAME: test
     volumes: 
       - ./:/var/www/html
+      - ./app.conf:/etc/apache2/sites-enabled/000-default.conf
     networks:
       - app_network
-
-  db:
-    image: mysql:5.7
-    container_name: database
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: test
-      MYSQL_USER: test
-      MYSQL_PASSWORD: password
-      MYSQL_RANDOM_ROOT_PASSWORD: '1'
-    volumes:
-      - db:/var/lib/mysql
-    command: '--default-authentication-plugin=mysql_native_password'
-    networks:
-      - app_network
-
-volumes:
-  db:
+    labels:
+      kompose.service.type: LoadBalancer
 
 networks:
   app_network:
