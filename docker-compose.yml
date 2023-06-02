@@ -14,7 +14,7 @@ services:
 
   wordpress:
     depends_on:
-      - php
+      - webserver
     image: wordpress:latest
     container_name: wordpress
     restart: unless-stopped
