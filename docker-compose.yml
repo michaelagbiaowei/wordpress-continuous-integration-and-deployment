@@ -2,8 +2,7 @@ version: '3.1'
 
 services:
   webserver:
-    image: nginx:${NGINX_VERSION}
-    container_name: ${NGINX_CONTAINER}
+    image: nginx:latest
     ports:
       - "80:80"
     volumes:
@@ -13,25 +12,41 @@ services:
       - app_network
 
   wordpress:
-    depends_on:
-      - webserver
+    depends_on: 
+      - db
     image: wordpress:latest
     container_name: wordpress
     restart: unless-stopped
     ports:
       - 8080:80
     environment:
-      WORDPRESS_DB_HOST: database-1.c4v46hctkald.us-east-1.rds.amazonaws.com:3306
-      WORDPRESS_DB_USERNAME: test
-      WORDPRESS_DB_PASSWORD: Ifiekemi1990
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: test
+      WORDPRESS_DB_PASSWORD: password
       WORDPRESS_DB_NAME: test
     volumes: 
       - ./:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d/
     networks:
       - app_network
-    labels:
-      kompose.service.type: LoadBalancer
+
+  db:
+    image: mysql:5.7
+    container_name: database
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: password
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks:
+      - app_network
+
+volumes:
+  db:
 
 networks:
   app_network:
