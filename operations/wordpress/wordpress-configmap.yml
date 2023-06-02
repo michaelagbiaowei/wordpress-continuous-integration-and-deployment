@@ -1,3 +1,4 @@
+# Create a Kubernetes configmap for WordPress
 ---
 apiVersion: "v1"
 kind: "ConfigMap"
