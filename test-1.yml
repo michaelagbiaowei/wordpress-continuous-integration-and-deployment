@@ -2,7 +2,9 @@ version: '3.1'
 
 services:
   webserver:
-    image: nginx:latest
+    # build: ./path to the Dockerfile
+    image: nginx:${NGINX_VERSION}
+    container_name: ${NGINX_CONTAINER}
     ports:
       - "80:80"
     volumes:
@@ -14,30 +16,32 @@ services:
   wordpress:
     depends_on: 
       - db
-    image: wordpress:latest
-    container_name: wordpress
+    image: wordpress:${WORDPRESS_VERSION}
+    container_name: ${WORDPRESS_CONTAINER}
     restart: unless-stopped
     ports:
       - 8080:80
     environment:
       WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: test
-      WORDPRESS_DB_PASSWORD: password
-      WORDPRESS_DB_NAME: test
+      WORDPRESS_DB_USERNAME: ${DB_USERNAME}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${DB_DATABASE}
     volumes: 
       - ./:/var/www/html
     networks:
       - app_network
+    labels:
+      kompose.service.type: LoadBalancer
 
   db:
-    image: mysql:5.7
-    container_name: database
+    image: mysql:${DB_VERSION}
+    container_name: ${DB_CONTAINER}
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: test
-      MYSQL_USER: test
-      MYSQL_PASSWORD: password
-      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: ${RANDOM_ROOT_PASSWORD}
     volumes:
       - db:/var/lib/mysql
     command: '--default-authentication-plugin=mysql_native_password'
