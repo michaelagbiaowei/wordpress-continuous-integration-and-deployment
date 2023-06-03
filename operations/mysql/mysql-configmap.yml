@@ -3,7 +3,7 @@
 apiVersion: "v1"
 kind: "ConfigMap"
 metadata:
-  name: "postgres-config"
+  name: "mysql-config"
   namespace: "default"
   labels:
     app: "postgres"
