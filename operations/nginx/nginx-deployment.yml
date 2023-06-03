@@ -27,10 +27,10 @@ spec:
           # dependsOn:
           #   - wordpress
           volumeMounts:
-            - name: nginx-config
+            - name: nginx-configmap
               mountPath: /etc/nginx/conf.d/nginx.conf
               subPath: nginx.conf
-    volumes:
-      - name: nginx-config
-        configMap:
-          name: nginx-configmap
+      volumes:
+        - name: nginx-configmap
+          configMap:
+            name: nginx-configmap
