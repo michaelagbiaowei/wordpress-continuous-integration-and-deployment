@@ -22,36 +22,36 @@ spec:
       containers:
         - name: mysql
           image: mysql:5.7
-          env:
-            - name: MYSQL_DATABASE
-              valueFrom:
-                configMapKeyRef:
-                  key: MYSQL_DATABASE
-                  name: mysql-configmap
-            - name: MYSQL_USERNAME
-              valueFrom:
-                configMapKeyRef:
-                  key: MYSQL_USERNAME
-                  name: mysql-configmap
-            - name: MYSQL_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  key: MYSQL_PASSWORD
-                  name: mysql-configmap
-            - name: MYSQL_RANDOM_ROOT_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  key: MYSQL_RANDOM_ROOT_PASSWORD
-                  name: mysql-configmap
           # env:
-          #   - name: MYSQL_ROOT_PASSWORD
-          #     value: 12345
           #   - name: MYSQL_DATABASE
-          #     value: testdatabase
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         key: MYSQL_DATABASE
+          #         name: mysql-configmap
           #   - name: MYSQL_USERNAME
-          #     value: testuser
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         key: MYSQL_USERNAME
+          #         name: mysql-configmap
           #   - name: MYSQL_PASSWORD
-          #     value: testpassword
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         key: MYSQL_PASSWORD
+          #         name: mysql-configmap
+          #   - name: MYSQL_RANDOM_ROOT_PASSWORD
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         key: MYSQL_RANDOM_ROOT_PASSWORD
+          #         name: mysql-configmap
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: 12345
+            - name: MYSQL_DATABASE
+              value: testdatabase
+            - name: MYSQL_USERNAME
+              value: testuser
+            - name: MYSQL_PASSWORD
+              value: testpassword
           ports:
             - containerPort: 3306
           volumeMounts:
