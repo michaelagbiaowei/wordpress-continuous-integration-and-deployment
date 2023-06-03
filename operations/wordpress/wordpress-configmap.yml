@@ -8,6 +8,6 @@ metadata:
     app: wordpress
 data:
   WORDPRESS_DB_USER: "testuser"
-  WORDPRESS_DB_HOST: "mysql-service"
+  WORDPRESS_DB_HOST: "mysql-service:3306"
   WORDPRESS_DB_PASSWORD: "testpassword"
   WORDPRESS_DB_NAME: "testdatabase"
