@@ -1,0 +1,11 @@
+    1  cd /etc/mysql/
+    2  ls
+    3  sudo vi my.cnf
+    4  cd /workspaces/wordpress-continuous-integration-and-deployment/operations/
+    5  ls
+    6  kubect describe cconfigmap mysql-configmap
+    7  kubectl describe cconfigmap mysql-configmap
+    8  kubectl get pods
+    9  kubectl exec mysql-8b57b64b4-hdjwt -- env | grep <key>
+   10  kubectl exec mysql-8b57b64b4-hdjwt -- env | grep MYSQL_DATABASE
+   11  history > history.txt

@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: mysql-deployment
   labels:
     app: wordpress
 spec:
@@ -45,7 +45,13 @@ spec:
                   name: mysql-configmap
           # env:
           #   - name: MYSQL_ROOT_PASSWORD
-          #     value: your_mysql_root_password
+          #     value: 12345
+          #   - name: MYSQL_DATABASE
+          #     value: testdatabase
+          #   - name: MYSQL_USERNAME
+          #     value: testuser
+          #   - name: MYSQL_PASSWORD
+          #     value: testpassword
           ports:
             - containerPort: 3306
           volumeMounts:

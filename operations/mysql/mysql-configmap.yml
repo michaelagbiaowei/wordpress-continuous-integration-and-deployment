@@ -3,12 +3,11 @@
 apiVersion: "v1"
 kind: "ConfigMap"
 metadata:
-  name: "mysql-configmap"
-  namespace: "default"
+  name: mysql-configmap
   labels:
-    app: "postgres"
+    app: wordpress
 data:
-  MYSQL_DATABASE: "test"
-  MYSQL_USERNAME: "test"
-  MYSQL_PASSWORD: "password"
+  MYSQL_DATABASE: "testdatabase"
+  MYSQL_USERNAME: "testuser"
+  MYSQL_PASSWORD: "testpassword"
   MYSQL_RANDOM_ROOT_PASSWORD: "1"
