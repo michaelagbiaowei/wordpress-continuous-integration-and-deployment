@@ -45,7 +45,7 @@ spec:
           #         name: mysql-configmap
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: 12345
+              value: asdfg
             - name: MYSQL_DATABASE
               value: testdatabase
             - name: MYSQL_USERNAME
