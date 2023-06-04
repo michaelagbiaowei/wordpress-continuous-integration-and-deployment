@@ -13,14 +13,14 @@ services:
 
   wordpress:
     depends_on: 
-      - db
+      - mysql-service
     image: wordpress:latest
     container_name: wordpress
     restart: unless-stopped
     ports:
       - 8080:80
     environment:
-      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_HOST: mysql-service:3306
       WORDPRESS_DB_USER: test
       WORDPRESS_DB_PASSWORD: password
       WORDPRESS_DB_NAME: test
@@ -30,7 +30,7 @@ services:
     networks:
       - app_network
 
-  db:
+  mysql-service:
     image: mysql:5.7
     container_name: database
     restart: unless-stopped
