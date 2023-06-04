@@ -4,16 +4,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
-
+  labels:
+    app: wordpress
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: nginx
+      app: wordpress
+      tier: webserver
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: nginx       
+        app: wordpress
+        tier: webserver   
     spec:
       containers:
         - name: nginx
@@ -21,7 +25,7 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-            - name: nginx-config
+            - name: nginx-configmap
               mountPath: /etc/nginx/conf.d/nginx.conf
               subPath: nginx.conf
           # dependsOn:
