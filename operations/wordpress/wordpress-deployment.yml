@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: wordpress
-          image: miaempire/wordpress:latest
+          image: maiempire/wordpress:latest
           # env:
             # - name: WORDPRESS_DB_NAME
             #   value: testdatabase

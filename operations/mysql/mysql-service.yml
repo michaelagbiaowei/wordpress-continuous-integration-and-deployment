@@ -13,6 +13,7 @@ spec:
   ports:
     - protocol: TCP
       port: 3306
-      nodePort: 30036
       targetPort: 3306
-  type: NodePort
+      # nodePort: 30036
+      # targetPort: 3306
+  # type: NodePort

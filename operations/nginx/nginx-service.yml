@@ -4,10 +4,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nginx-service
-  app: wordpress
+  labels:
+    app: wordpress
 spec:
   selector:
-    app: nginx
+    app: wordpress
+    tire: webserver
   ports:
   - name: http
     protocol: TCP
