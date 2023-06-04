@@ -9,8 +9,10 @@ metadata:
 spec:
   selector:
     app: wordpress
-    tier: mysql
+    tier: database
   ports:
     - protocol: TCP
       port: 3306
-  clusterIP: None
+      nodePort: 30036
+      targetPort: 3306
+  type: NodePort

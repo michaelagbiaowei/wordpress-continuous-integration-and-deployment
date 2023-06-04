@@ -10,14 +10,14 @@ spec:
   selector:
     matchLabels:
       app: wordpress
-      tier: mysql
+      tier: database
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: wordpress
-        tier: mysql
+        tier: database
     spec:
       containers:
         - name: mysql
