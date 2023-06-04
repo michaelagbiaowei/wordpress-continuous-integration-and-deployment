@@ -3,7 +3,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-configmap
-  app: wordpress
+  labels:
+    app: wordpress
 data:
   nginx.conf: |
     user nginx;
