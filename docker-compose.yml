@@ -22,7 +22,7 @@ services:
       - 8080:80
     environment:
       WORDPRESS_DB_HOST: mysql-service:3306
-      WORDPRESS_DB_USERNAME: ${DB_USERNAME}
+      WORDPRESS_DB_USERNAME: test
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
       WORDPRESS_DB_NAME: ${DB_DATABASE}
     volumes: 
