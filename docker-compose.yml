@@ -33,7 +33,7 @@ services:
     labels:
       kompose.service.type: LoadBalancer
 
-  db:
+  mysql-service:
     image: mysql:${DB_VERSION}
     container_name: ${DB_CONTAINER}
     restart: unless-stopped
