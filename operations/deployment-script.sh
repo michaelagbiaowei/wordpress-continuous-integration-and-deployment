@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ## Deploy the aplication services using the following commands:
-kubectl apply -f ./mysql 
+# kubectl apply -f ./mysql 
 kubectl apply -f ./wordpress
 # kubectl apply -f ./nginx
 
