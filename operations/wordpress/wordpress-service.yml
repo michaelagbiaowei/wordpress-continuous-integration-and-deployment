@@ -5,13 +5,15 @@ kind: Service
 metadata:
   name: wordpress-service
   labels:
-    app: wordpress
+    name: wordpress-service
+    app: wordpress-app
 spec:
-  selector:
-    app: wordpress
-    tier: frontend
-  ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 80
   type: LoadBalancer
+  ports:
+    - port: 8080
+      targetPort: 80
+      # nodePort: 30005
+  # type: NodePort
+  selector:
+    name: wordpress-pod
+    app: wordpress-app

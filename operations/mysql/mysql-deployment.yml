@@ -5,19 +5,20 @@ kind: Deployment
 metadata:
   name: mysql-deployment
   labels:
-    app: wordpress
+    name: mysql-deployment
+    app: wordpress-app
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: wordpress
-      tier: database
-  strategy:
-    type: Recreate
+      name: mysql-pod
+      app: wordpress-app
+  
   template:
     metadata:
       labels:
-        app: wordpress
-        tier: database
+        name: mysql-pod
+        app: wordpress-app
     spec:
       containers:
         - name: mysql

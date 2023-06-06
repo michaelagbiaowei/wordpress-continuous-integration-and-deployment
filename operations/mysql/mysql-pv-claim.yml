@@ -5,7 +5,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: mysql-pv-claim
   labels:
-    app: wordpress
+    name: mysql-pv-claim
+    app: wordpress-app
 spec:
   accessModes:
     - ReadWriteOnce

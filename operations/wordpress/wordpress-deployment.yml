@@ -1,43 +1,28 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wordpress-deployment
   labels:
-    app: wordpress
+    name: wordpress-deployment
+    app: wordpress-app
 spec:
+  replicas: 1
   selector:
     matchLabels:
-      app: wordpress
-      tier: frontend
-  strategy:
-    type: Recreate
+      name: wordpress-pod
+      app: wordpress-app
   template:
     metadata:
+      name: wordpress-pod
       labels:
-        app: wordpress
-        tier: frontend
+        name: wordpress-pod
+        app: wordpress-app
     spec:
       containers:
         - name: wordpress
           image: maiempire/wordpress:latest
           env:
-            # - name: WORDPRESS_DB_HOST
-            #   value: mysql-service
-            # - name: WORDPRESS_DB_USER
-            #   valueFrom:
-            #     secretKeyRef:
-            #       key: WORDPRESS_DB_USER
-            #       name: wordpress-secret
-            # - name: WORDPRESS_DB_PASSWORD
-            #   valueFrom:
-            #     secretKeyRef:
-            #       key: WORDPRESS_DB_PASSWORD
-            #       name: wordpress-secret
-            # - name: WORDPRESS_DB_NAME
-            #   valueFrom:
-            #     secretKeyRef:
-            #       key: WORDPRESS_DB_NAME
-            #       name: wordpress-secret
             - name: WORDPRESS_DB_HOST
               valueFrom:
                 configMapKeyRef:

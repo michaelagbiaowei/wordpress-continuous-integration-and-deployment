@@ -5,14 +5,13 @@ kind: Service
 metadata:
   name: mysql-service
   labels:
-    app: wordpress
+    name: mysql-service
+    app: worpress-app
 spec:
   selector:
-    app: wordpress
-    tier: database
+    name: mysql-pod
+    app: worpress-app
   ports:
     - protocol: TCP
       port: 3306
       targetPort: 3306
-      nodePort: 30036
-  type: NodePort
