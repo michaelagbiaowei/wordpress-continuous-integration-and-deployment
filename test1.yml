@@ -2,8 +2,8 @@ version: '3.1'
 
 services:
   webserver:
-    image: nginx:latest
-    container_name: webserver
+    image: nginx:${NGINX_VERSION}
+    container_name: ${NGINX_CONTAINER}
     ports:
       - "80:80"
     volumes:
@@ -15,14 +15,16 @@ services:
   wordpress:
     depends_on: 
       - mysql-service
-    image: wordpress:latest
-    container_name: wordpress
+    image: wordpress:${WORDPRESS_VERSION}
+    container_name: ${WORDPRESS_CONTAINER}
     restart: unless-stopped
     ports:
       - 8080:80
+    # env_file:
+    #   - .env
     environment:
       WORDPRESS_DB_HOST: mysql-service:3306
-      WORDPRESS_DB_USER: test
+      WORDPRESS_DB_USERNAME: test
       WORDPRESS_DB_PASSWORD: password
       WORDPRESS_DB_NAME: test
     volumes: 
@@ -30,19 +32,25 @@ services:
       - ./nginx-conf:/etc/nginx/conf.d/
     networks:
       - app_network
+    labels:
+      kompose.service.type: LoadBalancer
 
   mysql-service:
-    image: mysql:5.7
-    container_name: database
+    image: mysql:${DB_VERSION}
+    container_name: ${DB_CONTAINER}
     restart: unless-stopped
+    # env_file:
+    #   - .env
     environment:
       MYSQL_DATABASE: test
       MYSQL_USER: test
       MYSQL_PASSWORD: password
-      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+      MYSQL_RANDOM_ROOT_PASSWORD: "1"
     volumes:
       - db:/var/lib/mysql
-    command: '--default-authentication-plugin=mysql_native_password'
+    ports: 
+      - 3306
+    # command: '--default-authentication-plugin=mysql_native_password'
     networks:
       - app_network
 
