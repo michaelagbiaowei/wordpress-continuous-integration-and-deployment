@@ -23,10 +23,10 @@ services:
     env_file:
       - .env
     environment:
-      WORDPRESS_DB_HOST: ${DB_HOST}:3306
-      WORDPRESS_DB_USERNAME: ${DB_USERNAME}
-      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
-      WORDPRESS_DB_NAME: ${DB_DATABASE}
+      WORDPRESS_DB_HOST: mysql-service:3306
+      WORDPRESS_DB_USERNAME: test
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: test
     volumes: 
       - ./:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d/
@@ -42,10 +42,10 @@ services:
     env_file:
       - .env
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_RANDOM_ROOT_PASSWORD: ${RANDOM_ROOT_PASSWORD}
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: password
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
     volumes:
       - db:/var/lib/mysql
     ports: 
