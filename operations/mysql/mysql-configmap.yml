@@ -7,7 +7,7 @@ metadata:
   labels:
     app: wordpress
 data:
-  MYSQL_DATABASE: "testdatabase"
-  MYSQL_USERNAME: "testuser"
-  MYSQL_PASSWORD: "testpassword"
+  MYSQL_DATABASE: test
+  MYSQL_USERNAME: test
+  MYSQL_PASSWORD: password
   MYSQL_RANDOM_ROOT_PASSWORD: "1"
