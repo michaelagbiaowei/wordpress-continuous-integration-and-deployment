@@ -45,7 +45,7 @@ services:
       MYSQL_DATABASE: test
       MYSQL_USER: test
       MYSQL_PASSWORD: password
-      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_RANDOM_ROOT_PASSWORD: "1"
     volumes:
       - db:/var/lib/mysql
     ports: 
