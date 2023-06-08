@@ -1,17 +1,10 @@
-# Create a Kubernetes Service for MySQL
----
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql-service
-  labels:
-    name: mysql-service
-    app: worpress-app
 spec:
   selector:
-    name: mysql-pod
-    app: worpress-app
+    app: wordpress
   ports:
-    - protocol: TCP
-      port: 3306
-      targetPort: 3306
+  - port: 3306
+    targetPort: 3306

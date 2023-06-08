@@ -1,15 +1,11 @@
-# Create a Kubernetes PersistentVolumeClaim for WordPress
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wordpress-pv-claim
-  labels:
-    name: wordpress-pv-claim
-    app: wordpress-app
+  name: wordpress-pvc
 spec:
-  accessModes:
-    - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce

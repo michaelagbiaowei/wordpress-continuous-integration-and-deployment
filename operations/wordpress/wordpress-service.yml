@@ -1,19 +1,10 @@
-# Create a Kubernetes Service for WordPress
----
 apiVersion: v1
 kind: Service
 metadata:
   name: wordpress-service
-  labels:
-    name: wordpress-service
-    app: wordpress-app
 spec:
-  type: LoadBalancer
-  ports:
-    - port: 8080
-      targetPort: 80
-      # nodePort: 30005
-  # type: NodePort
   selector:
-    name: wordpress-pod
-    app: wordpress-app
+    app: wordpress
+  ports:
+  - port: 8080
+    targetPort: 80

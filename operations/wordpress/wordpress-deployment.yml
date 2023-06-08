@@ -1,55 +1,51 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wordpress-deployment
-  labels:
-    name: wordpress-deployment
-    app: wordpress-app
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      name: wordpress-pod
-      app: wordpress-app
+      app: wordpress
   template:
     metadata:
-      name: wordpress-pod
       labels:
-        name: wordpress-pod
-        app: wordpress-app
+        app: wordpress
     spec:
       containers:
-        - name: wordpress
-          image: maiempire/wordpress:latest
-          env:
-            - name: WORDPRESS_DB_HOST
-              valueFrom:
-                configMapKeyRef:
-                  key: WORDPRESS_DB_HOST
-                  name: wordpress-configmap
-            - name: WORDPRESS_DB_USER
-              valueFrom:
-                configMapKeyRef:
-                  key: WORDPRESS_DB_USER
-                  name: wordpress-configmap
-            - name: WORDPRESS_DB_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  key: WORDPRESS_DB_PASSWORD
-                  name: wordpress-configmap
-            - name: WORDPRESS_DB_NAME
-              valueFrom:
-                configMapKeyRef:
-                  key: WORDPRESS_DB_NAME
-                  name: wordpress-configmap
-          ports:
-            - containerPort: 80
-          volumeMounts:
-            - name: wordpress-persistent-storage
-              mountPath: /var/www/html
+      - name: wordpress
+        image: maiempire/wordpress:latest
+        env:
+        - name: WORDPRESS_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: WORDPRESS_DB_HOST
+              name: wordpress-configmap
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            configMapKeyRef:
+              key: WORDPRESS_DB_USER
+              name: wordpress-configmap
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: WORDPRESS_DB_PASSWORD
+              name: wordpress-configmap
+        - name: WORDPRESS_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: WORDPRESS_DB_NAME
+              name: wordpress-configmap
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: wordpress-ps
+          mountPath: /var/www/html
       volumes:
-        - name: wordpress-persistent-storage
-          persistentVolumeClaim:
-            claimName: wordpress-pv-claim
+      - name: wordpress-ps
+        persistentVolumeClaim:
+          claimName: wordpress-pvc
 

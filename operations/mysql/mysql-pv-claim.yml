@@ -1,15 +1,11 @@
-# Create a Kubernetes PersistentVolumeClaim for MySQL
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pv-claim
-  labels:
-    name: mysql-pv-claim
-    app: wordpress-app
+  name: mysql-pvc
 spec:
-  accessModes:
-    - ReadWriteOnce
   resources:
     requests:
       storage: 20Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce

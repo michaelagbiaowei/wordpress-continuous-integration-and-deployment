@@ -1,12 +1,7 @@
-# Create a Kubernetes configmap for MySQL
----
-apiVersion: "v1"
-kind: "ConfigMap"
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: "mysql-configmap"
-  labels:
-    name: mysql-configmap
-    app: wordpress-app
+  name: mysql-configmap
 data:
   MYSQL_DATABASE: test
   MYSQL_USERNAME: test

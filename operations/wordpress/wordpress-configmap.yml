@@ -1,14 +1,9 @@
-# Create a Kubernetes configmap for WordPress
----
-apiVersion: "v1"
-kind: "ConfigMap"
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: "wordpress-configmap"
-  labels:
-    name: wordpress-configmap
-    app: wordpress-app
+  name: wordpress-configmap
 data:
-  WORDPRESS_DB_USER: test
-  WORDPRESS_DB_HOST: mysql-service
-  WORDPRESS_DB_PASSWORD: password
-  WORDPRESS_DB_NAME: test
+  MYSQL_DATABASE: test
+  MYSQL_USERNAME: test
+  MYSQL_PASSWORD: password
+  MYSQL_RANDOM_ROOT_PASSWORD: "1"
