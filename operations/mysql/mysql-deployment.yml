@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-deployment
+  labels:
+    app: wordpress
 spec:
   selector:
     matchLabels:
@@ -12,7 +14,7 @@ spec:
         app: wordpress
     spec:
       containers:
-      - name: mysql-deployment
+      - name: mysql
         image: mysql:5.7
         env:
         - name: MYSQL_DATABASE
@@ -40,7 +42,8 @@ spec:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 3306
+        - containerPort: 3306 
+          name: wordpress
         volumeMounts:
         - name: mysql-ps
           mountPath: /var/lib/mysql
