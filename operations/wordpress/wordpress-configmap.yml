@@ -5,7 +5,5 @@ metadata:
   labels:
     app: wordpress
 data:
-  MYSQL_DATABASE: test
-  MYSQL_USERNAME: test
-  MYSQL_PASSWORD: password
-  MYSQL_RANDOM_ROOT_PASSWORD: "1"
+  WORDPRESS_DB_HOST: mysql-service
+  WORDPRESS_DB_PASSWORD: password
