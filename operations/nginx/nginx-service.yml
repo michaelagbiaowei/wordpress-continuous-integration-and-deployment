@@ -9,7 +9,6 @@ metadata:
 spec:
   selector:
     app: wordpress
-    tire: webserver
   ports:
   - name: http
     protocol: TCP
