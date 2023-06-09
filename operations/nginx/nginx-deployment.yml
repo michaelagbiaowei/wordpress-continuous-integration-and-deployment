@@ -1,33 +1,35 @@
-# # Create a Kubernetes Deployment for Nginx
----
 apiVersion: apps/v1
 kind: Deployment
-metadata:
+metadata: 
   name: nginx-deployment
   labels:
     app: wordpress
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: wordpress
-      tier: webserver
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: wordpress
-        tier: webserver 
     spec:
       containers:
-        - name: nginx
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          volumeMounts:
-            - name: nginx-configmap
-              mountPath: /etc/nginx/conf.d/nginx.conf
-              subPath: nginx.conf
+      - name: wordpress
+        image: nginx:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+          name: nginx
+        volumeMounts:
+          - name: nginx-configmap
+            mountPath: /etc/nginx/conf.d/nginx.conf
+            subPath: nginx.conf
       volumes:
         - name: nginx-configmap
           configMap:
