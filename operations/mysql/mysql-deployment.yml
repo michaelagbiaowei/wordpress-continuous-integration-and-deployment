@@ -47,9 +47,11 @@ spec:
           requests:
             memory: "200Mi"
             cpu: "700m"
+        livenessProbe:
+          tcpSocket:
+            port: 3306
         ports:
-        - containerPort: 3306 
-          name: mysql
+          - containerPort: 3306
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
