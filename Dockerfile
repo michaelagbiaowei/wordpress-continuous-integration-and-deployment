@@ -15,7 +15,8 @@ VOLUME ./:/var/www/html
 EXPOSE 8080
 
 # CMD ["php", "-S", "0.0.0.0:8080"]
-CMD ["apache2-foreground"]
+# CMD ["apache2-foreground"]
+CMD ["wp-admin/install.php"]
 
 # # Build the image
 # RUN docker build -t wordpress .
