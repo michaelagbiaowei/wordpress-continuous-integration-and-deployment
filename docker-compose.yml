@@ -1,5 +1,4 @@
 version: '3.1'
-
 services:
   wordpress:
     image: wordpress:latest
@@ -13,7 +12,7 @@ services:
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
       WORDPRESS_DB_NAME: ${DB_DATABASE}
     volumes: 
-      - wp_data/:/var/www/html
+      - wp_data:/var/www/html
     networks:
       - app_network
 
