@@ -6,5 +6,7 @@ metadata:
     app: wordpress
 data:
   # WORDPRESS_DB_HOST: mysql-service.default.svc.cluster.local
-  WORDPRESS_DB_PASSWORD: Ifiekemi1990
+  WORDPRESS_DB_USER: admin
+  WORDPRESS_DB_NAME: wordpressdb
+  WORDPRESS_DB_PASSWORD: KtTapS23G1piCSqROJNk
   WORDPRESS_DB_HOST: database-1.c4v46hctkald.us-east-1.rds.amazonaws.com

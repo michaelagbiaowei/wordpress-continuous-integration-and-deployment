@@ -30,6 +30,16 @@ spec:
             configMapKeyRef:
               key: WORDPRESS_DB_PASSWORD
               name: wordpress-configmap
+        - name: WORDPRESS_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: WORDPRESS_DB_NAME
+              name: wordpress-configmap
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            configMapKeyRef:
+              key: WORDPRESS_DB_USER
+              name: wordpress-configmap
         resources:
           limits:
             memory: "128Mi"
