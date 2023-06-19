@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 url="http://example.com"
 
 echo "Enter the URL of the WordPress site you want to scan:"

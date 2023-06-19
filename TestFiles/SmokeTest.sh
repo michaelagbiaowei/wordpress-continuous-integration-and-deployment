@@ -5,6 +5,7 @@ set -e
 url="http://example.com"
 
 echo "Performing smoke test for WordPress app..."
+
 response=$(curl -s -o /dev/null -w "%{http_code}" $url)
 
 if [ $response -eq 200 ]; then
