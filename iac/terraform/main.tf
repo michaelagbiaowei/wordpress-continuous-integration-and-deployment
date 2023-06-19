@@ -120,7 +120,7 @@ module "db_default" {
 }
 
 module "db_disabled" {
-  source = "../../"
+  source  = "terraform-aws-modules/rds/aws"
 
   identifier = "${local.name}-disabled"
 
