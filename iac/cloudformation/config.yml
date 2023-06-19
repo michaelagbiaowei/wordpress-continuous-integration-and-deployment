@@ -18,11 +18,11 @@ Parameters:
   DBInstanceIdentifier:
     Description: Type a name for your DB instance.First character must be a letter.1-60 alphanumeric characters.
     Type: String
-    Default: AadhaarVaultDBServer
+    Default: wordpress-database
   DBName:
     Description: Database Name
     Type: String
-    Default: AadhaarDB
+    Default: wordpressdb
     MinLength: '4'
     MaxLength: '64'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
@@ -30,7 +30,7 @@ Parameters:
   MasterUsername:
     Description: Database administration name.
     Type: String
-    Default: rdsroot
+    Default: admin
     MinLength: '1'
     MaxLength: '16'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
@@ -78,7 +78,7 @@ Parameters:
   SnapshotOnDelete:
     Description: Do you want to create a Snapshot on instance delete?
     Type: String
-    Default: 'true'
+    Default: 'false'
     AllowedValues:
     - 'true'
     - 'false'
