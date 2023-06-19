@@ -5,20 +5,20 @@ Parameters:
   Owner:
     Description: Enter the Name of the owner for this Stack.
     Type: String
-    Default: Name
-  VPC:
-    Description: Select VPC form the available VPCs in your account.
-    Type: AWS::EC2::VPC::Id
-  PrivateSubnet1:
-    Description: Select Private Subnet 1.
-    Type: AWS::EC2::Subnet::Id
-  PrivateSubnet2:
-    Description: Select Private Subnet 2.
-    Type: AWS::EC2::Subnet::Id
+    Default: Michael Agbiaowei
+  # VPC:
+  #   Description: Select VPC form the available VPCs in your account.
+  #   Type: AWS::EC2::VPC::Id
+  # PrivateSubnet1:
+  #   Description: Select Private Subnet 1.
+  #   Type: AWS::EC2::Subnet::Id
+  # PrivateSubnet2:
+  #   Description: Select Private Subnet 2.
+  #   Type: AWS::EC2::Subnet::Id
   DBInstanceIdentifier:
     Description: Type a name for your DB instance.First character must be a letter.1-60 alphanumeric characters.
     Type: String
-    Default: wordpress-database
+    Default: env.DB_IDENTIFIER
   DBName:
     Description: Database Name
     Type: String
@@ -30,7 +30,7 @@ Parameters:
   MasterUsername:
     Description: Database administration name.
     Type: String
-    Default: admin
+    Default: env.DB_USER
     MinLength: '1'
     MaxLength: '16'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
@@ -39,6 +39,7 @@ Parameters:
     NoEcho: 'true'
     Description: Database administration password.
     Type: String
+    Default: env.DB_PASSWORD
     MinLength: '8'
     AllowedPattern: "[a-zA-Z0-9!?]*"
     ConstraintDescription: Must only contain upper and lowercase letters and numbers
@@ -112,12 +113,12 @@ Metadata:
         default: Ownership
       Parameters:
       - Owner
-    - Label:
-        default: Network Configuration
-      Parameters:
-      - VPC
-      - PrivateSubnet1
-      - PrivateSubnet2
+    # - Label:
+    #     default: Network Configuration
+    #   Parameters:
+      # - VPC
+      # - PrivateSubnet1
+      # - PrivateSubnet2
     - Label:
         default: RDS Configuration
       Parameters:
@@ -137,10 +138,10 @@ Metadata:
         default: Team or Individual Owner
       InstanceType:
         default: Instance Type
-      PrivateSubnet1:
-        default: Private Subnet 1
-      PrivateSubnet2:
-        default: Private Subnet 2
+      # PrivateSubnet1:
+      #   default: Private Subnet 1
+      # PrivateSubnet2:
+      #   default: Private Subnet 2
       MasterUsername:
         default: Master Username
       MasterUserPassword:
@@ -170,7 +171,7 @@ Resources:
     Properties:
       GroupDescription: Instance to RDS Access
       VpcId:
-        Ref: VPC
+        - Fn::ImportValue: !Sub ${EnvironmentName}-VPCID
       Tags:
       - Key: Name
         Value:
@@ -203,8 +204,9 @@ Resources:
         - - 'RDS Subnet Group for '
           - Ref: AWS::StackName
       SubnetIds:
-      - Ref: PrivateSubnet1
-      - Ref: PrivateSubnet2
+        - Fn::ImportValue: !Sub "${EnvironmentName}-PRI1-SN"
+        - Fn::ImportValue: !Sub "${EnvironmentName}-PRI2-SN"
+        - Fn::ImportValue: !Sub "${EnvironmentName}-PRI3-SN"
       Tags:
       - Key: Name
         Value:
@@ -276,10 +278,10 @@ Outputs:
     Description: Team or Individual that Owns this Formation.
     Value:
       Ref: Owner
-  VPC:
-    Description: VPC Used
-    Value:
-      Ref: VPC
+  # VPC:
+  #   Description: VPC Used
+  #   Value:
+  #     Ref: VPC
   RDSHostname:
     Description: RDS Hostname
     Value:
@@ -304,14 +306,14 @@ Outputs:
     Description: RDS Access Security Group Created.
     Value:
       Ref: RDSAccessSecurityGroup
-  PrivateSubnet1:
-    Description: Private Subnet 1 Deployment
-    Value:
-      Ref: PrivateSubnet1
-  PrivateSubnet2:
-    Description: Private Subnet 2 Deployment
-    Value:
-      Ref: PrivateSubnet2
+  # PrivateSubnet1:
+  #   Description: Private Subnet 1 Deployment
+  #   Value:
+  #     Ref: PrivateSubnet1
+  # PrivateSubnet2:
+  #   Description: Private Subnet 2 Deployment
+  #   Value:
+  #     Ref: PrivateSubnet2
   BackupRetentionPeriod:
     Description: Backup Retention Period in Days
     Value:
