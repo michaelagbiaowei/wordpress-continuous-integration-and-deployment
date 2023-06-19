@@ -5,7 +5,7 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = "complete-mysql"
+  name   = "wordpress-mysql"
   region = "us-west-1"
 
   vpc_cidr = "10.0.0.0/16"
@@ -37,8 +37,8 @@ module "db" {
   allocated_storage     = 20
   max_allocated_storage = 100
 
-  db_name  = "completeMysql"
-  username = "complete_mysql"
+  db_name  = "wordpressMysql"
+  username = "wordpress_mysql"
   port     = 3306
 
   multi_az               = true
@@ -104,8 +104,8 @@ module "db_default" {
 
   allocated_storage = 20
 
-  db_name  = "completeMysql"
-  username = "complete_mysql"
+  db_name  = "wordpressMysql"
+  username = "wordpress_mysql"
   port     = 3306
 
   db_subnet_group_name   = module.vpc.database_subnet_group
@@ -155,7 +155,7 @@ module "security_group" {
   version = "~> 4.0"
 
   name        = local.name
-  description = "Complete MySQL example security group"
+  description = "wordpress MySQL example security group"
   vpc_id      = module.vpc.vpc_id
 
   # ingress
