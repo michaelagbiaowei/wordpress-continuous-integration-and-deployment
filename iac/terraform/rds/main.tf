@@ -134,7 +134,20 @@ module "db_default" {
 ################################################################################
 
 module "vpc" {
-  source  = "../vpc.tf"
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 4.0"
+
+  name = local.name
+  cidr = local.vpc_cidr
+
+  azs              = local.azs
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
+  intra_subnets   = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 52)]
+
+  create_database_subnet_group = true
+
+  tags = local.tags
 }
 
 module "security_group" {
