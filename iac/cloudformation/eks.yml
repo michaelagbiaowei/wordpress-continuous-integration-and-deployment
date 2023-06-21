@@ -55,8 +55,12 @@ Parameters:
   # PrivateCidrBlock3:
   #   Type: String
   #   Default: "10.0.6.0/24"
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
   EKSClusterVersion:
     Type: String
+    Default: 1.27
   NodeGroupInstanceTypes:
     Type: String
     Default: "t2.medium"
@@ -313,7 +317,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Communication between the control plane and worker nodegroups
-      VpcId: !Ref VPC
+      VpcId: 
+        Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
       GroupName: !Sub ${AWS::StackName}-eks-control-plane-sg
   ControlPlaneSecurityGroupIngress:
     Type: AWS::EC2::SecurityGroupIngress

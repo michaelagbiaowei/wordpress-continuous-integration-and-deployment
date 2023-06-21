@@ -15,10 +15,13 @@ Parameters:
   # PrivateSubnet2:
   #   Description: Select Private Subnet 2.
   #   Type: AWS::EC2::Subnet::Id
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
   DBInstanceIdentifier:
     Description: Type a name for your DB instance.First character must be a letter.1-60 alphanumeric characters.
     Type: String
-    Default: env.DB_IDENTIFIER
+    Default: wordpressidentifier
   DBName:
     Description: Database Name
     Type: String
@@ -30,7 +33,7 @@ Parameters:
   MasterUsername:
     Description: Database administration name.
     Type: String
-    Default: env.DB_USER
+    Default: wordpressuser
     MinLength: '1'
     MaxLength: '16'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
@@ -39,13 +42,13 @@ Parameters:
     NoEcho: 'true'
     Description: Database administration password.
     Type: String
-    Default: env.DB_PASSWORD
+    Default: wordpressPASSWORD12345
     MinLength: '8'
     AllowedPattern: "[a-zA-Z0-9!?]*"
     ConstraintDescription: Must only contain upper and lowercase letters and numbers
-  KmsKeyId:
-    Description: The ARN of the AWS KMS key that's used to encrypt the DB instance
-    Type: String
+  # KmsKeyId:
+  #   Description: The ARN of the AWS KMS key that's used to encrypt the DB instance
+  #   Type: String
   BackupRetentionPeriod:
     Description: Enter Backup Retention Period in Days.
     Type: Number
@@ -146,8 +149,8 @@ Metadata:
         default: Master Username
       MasterUserPassword:
         default: Master User Password
-      KmsKeyId:
-        default: The ARN of the AWS KMS key that's used to encrypt the DB instance
+      # KmsKeyId:
+      #   default: The ARN of the AWS KMS key that's used to encrypt the DB instance
       BackupRetentionPeriod:
         default: Backup Retention Period
       PreferredBackupWindow:
@@ -171,7 +174,7 @@ Resources:
     Properties:
       GroupDescription: Instance to RDS Access
       VpcId:
-        - Fn::ImportValue: !Sub ${EnvironmentName}-VPCID
+        Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
       Tags:
       - Key: Name
         Value:
@@ -250,8 +253,8 @@ Resources:
         Ref: MasterUsername
       MasterUserPassword:
         Ref: MasterUserPassword  
-      KmsKeyId:
-        Ref: KmsKeyId
+      # KmsKeyId:
+      #   Ref: KmsKeyId
       MultiAZ:
         Ref: MultiAvailabilityZone
       Port:
