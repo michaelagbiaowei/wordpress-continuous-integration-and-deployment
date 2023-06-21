@@ -1,5 +1,6 @@
 Description: >
-  Michael Agbiaowei/ Deploy an infrastructure for a  high avaliblity web app (wordpress) using aws cloudformation
+  Michael Agbiaowei/ This stack creates a Virtual Private Cloud (VPC)
+
 
 Parameters:
   EnvironmentName:

@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This stack creates an RDS MySql 8.0.28 Instance
+Description: Michal Agbiaowei/ This stack creates an RDS MySql 8.0.28 Instance
 Parameters:
   Owner:
     Description: Enter the Name of the owner for this Stack.
