@@ -1,4 +1,208 @@
-test
-build
-deploy
-clean-up
+version: 2.1
+
+orbs:
+  slack: circleci/slack@4.10.1
+  aws-cli: circleci/aws-cli@3.1.4
+  kubernetes: circleci/kubernetes@1.0.2
+
+commands:
+  notify_on_failure:
+    steps:
+      - slack/notify:
+          event: fail
+          channel: cicd-pipeline
+          template: basic_fail_1
+
+# INSTALL  DEPENDENCIES
+  installAwsCli:
+    description: Install AWS CLI v2
+    steps:
+      - run:
+          name: Install AWS CLI v2
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+
+  installDockerEngine:
+    description: Install AWS CLI v2
+    steps:
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            sudo mv /tmp/docker/* /usr/bin
+
+  installDockerComposeCli:
+    description: Install AWS CLI v2
+    steps:
+     - run:
+          name: Install Docker Compose CLI plugin
+          command: |
+            DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+            sudo mkdir -p $DOCKER_CONFIG/cli-plugins
+            curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+            sudo chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+
+# DESTROY ENVIRONMENTS
+  destroyVpcStackEnvironment:
+    description: Destroy VPC cloudformation stacks given a workflow ID.
+    parameters:
+      workflow_id:
+        type: string
+        default: "${CIRCLE_WORKFLOW_ID:0:7}"
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            echo "Destroying environment: << parameters.workflow_id >> "
+            aws cloudformation delete-stack --stack-name wordpress-vpc-stack-<< parameters.workflow_id >>
+
+  destroyRdsStackEnvironment:
+    description: Destroy RDS cloudformation stacks given a workflow ID.
+    parameters:
+      workflow_id:
+        type: string
+        default: "${CIRCLE_WORKFLOW_ID:0:7}"
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            echo "Destroying environment: << parameters.workflow_id >> "
+            aws cloudformation delete-stack --stack-name wordpress-rds-stack-<< parameters.workflow_id >>
+
+  destroyEksStackEnvironment:
+    description: Destroy EKS cloudformation stacks given a workflow ID.
+    parameters:
+      workflow_id:
+        type: string
+        default: "${CIRCLE_WORKFLOW_ID:0:7}"
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            echo "Destroying environment: << parameters.workflow_id >> "
+            aws cloudformation delete-stack --stack-name wordpress-eks-stack-<< parameters.workflow_id >>
+
+
+jobs:
+  SyntaxValidation:
+    docker:
+      - image: circleci/php:7.1-node-browsers
+    steps:
+      - checkout
+      - run: sudo apt update
+      - run: sudo docker-php-ext-install zip
+      - run:
+          name: Run Syntax Validation
+          command: |
+            set -e
+
+            for file in *.php 
+            do
+                if ! php -l "$file"; then
+                    echo "Syntax error in $file"
+                    exit 1
+                fi
+            done
+
+      - notify_on_failure
+
+# DEPLOY INFRASTRUCTURE
+ deployVpcStack:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Provision network infrastructure
+          command: |
+            aws cloudformation deploy \
+              --template-file iac/cloudformation/vpc-stack.yml \
+              --tags project=wordpress-project \
+              --stack-name "wordpress-vpc-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameters-file vpc-parameters.json \
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+
+      - notify_on_failure
+      - destroyVpcStackEnvironment
+
+
+ deployRdsStack:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Provision Database Instance
+          command: |
+            aws cloudformation deploy \
+              --template-file iac/cloudformation/rds-stack.yml \
+              --tags project=wordpress-project \
+              --stack-name "wordpress-rds-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameters-file rds-parameters.json \
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+
+      - notify_on_failure
+      - destroyRdsStackEnvironment
+
+ deployEksStack:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Provision Kubernetes Cluster
+          command: |
+            aws cloudformation deploy \
+              --template-file iac/cloudformation/eks-stack.yml \
+              --tags project=wordpress-project \
+              --stack-name "wordpress-eks-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameters-file eks-parameters.json \
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+
+      - notify_on_failure
+      - destroyEksStackEnvironment
+
+  # BUILD APPLICATION
+  buildApp:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - installDockerEngine
+      - InstallDockerComposeCli
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: |
+            docker compose up -d
+      - run:
+          name: Push to Docker Hub
+          command: |
+            echo "$DOCKER_PASSWORD"
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker tag $APP:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
+            docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
+            
+      - notify_on_failure
+
+
+
+
+
+
+
+workflows:
+  say-hello-workflow:
+    jobs:
+      - say-hello
