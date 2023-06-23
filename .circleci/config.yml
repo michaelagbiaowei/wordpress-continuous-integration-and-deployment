@@ -91,7 +91,6 @@ commands:
             echo "Destroying environment: << parameters.workflow_id >> "
             aws cloudformation delete-stack --stack-name wordpress-eks-stack-<< parameters.workflow_id >>
 
-
 jobs:
   syntax_validation:
     docker:
@@ -159,6 +158,10 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - run:
+          name: Install tar utility to have workflow workspace capability
+          command: |
+            yum install -y tar gzip
       - run:
           name: Get Database Instance Endpoint annd save in a vaiable
           command: |
