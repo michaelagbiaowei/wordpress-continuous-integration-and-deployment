@@ -115,7 +115,7 @@ jobs:
 
       # - notify_on_failure
 
-DEPLOY INFRASTRUCTURE
+# DEPLOY INFRASTRUCTURE
   deployVpcStack:
     docker:
       - image: amazon/aws-cli
