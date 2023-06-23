@@ -15,7 +15,7 @@ commands:
           template: basic_fail_1
 
 # INSTALL  DEPENDENCIES
-  installAwsCli:
+  install_awscli:
     description: Install AWS CLI v2
     steps:
       - run:
@@ -25,7 +25,7 @@ commands:
             unzip awscliv2.zip
             sudo ./aws/install
 
-  installDockerEngine:
+  install_docker_engine:
     description: Install AWS CLI v2
     steps:
       - run:
@@ -37,7 +37,7 @@ commands:
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             sudo mv /tmp/docker/* /usr/bin
 
-  installDockerComposeCli:
+  install_docker_compose_cli:
     description: Install AWS CLI v2
     steps:
      - run:
@@ -49,7 +49,7 @@ commands:
             sudo chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 
 # DESTROY ENVIRONMENTS
-  destroyVpcStackEnvironment:
+  destroy_vpc_stack_environment:
     description: Destroy VPC cloudformation stacks given a workflow ID.
     parameters:
       workflow_id:
@@ -63,7 +63,7 @@ commands:
             echo "Destroying environment: << parameters.workflow_id >> "
             aws cloudformation delete-stack --stack-name wordpress-vpc-stack-<< parameters.workflow_id >>
 
-  destroyRdsStackEnvironment:
+  destroy_rds_stack_environment:
     description: Destroy RDS cloudformation stacks given a workflow ID.
     parameters:
       workflow_id:
@@ -77,7 +77,7 @@ commands:
             echo "Destroying environment: << parameters.workflow_id >> "
             aws cloudformation delete-stack --stack-name wordpress-rds-stack-<< parameters.workflow_id >>
 
-  destroyEksStackEnvironment:
+  destroy_eks_stack_environment:
     description: Destroy EKS cloudformation stacks given a workflow ID.
     parameters:
       workflow_id:
@@ -93,7 +93,7 @@ commands:
 
 
 jobs:
-  SyntaxValidation:
+  syntax_validation:
     docker:
       - image: circleci/php:7.1-node-browsers
     steps:
@@ -133,7 +133,7 @@ jobs:
 #               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
 #       - notify_on_failure
-#       - destroyVpcStackEnvironment
+#       - destroy_vpc_stack_environment
 
 
 #   deployRdsStack:
@@ -153,7 +153,7 @@ jobs:
 #               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
 #       - notify_on_failure
-#       - destroyRdsStackEnvironment
+#       - destroy_rds_stack_environment
 
 #   getRdsEndpoint:
 #     docker:
@@ -171,7 +171,7 @@ jobs:
 #             echo ${DB_ENDPOINT} > .env
 
 #       - notify_on_failure
-#       - destroyRdsStackEnvironment
+#       - destroy_rds_stack_environment
 
 #       - persist_to_workspace:
 #           root: ~/
@@ -195,7 +195,7 @@ jobs:
 #               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
 #       - notify_on_failure
-#       - destroyEksStackEnvironment
+#       - destroy_eks_stack_environment
 
 #   # BUILD APPLICATION
 #   buildApp:
@@ -203,8 +203,8 @@ jobs:
 #       - image: cimg/python:3.10
 #     steps:
 #       - checkout
-#       - installDockerEngine
-#       - InstallDockerComposeCli
+#       - install_docker_engine
+#       - Install_docker_compose_cli
 #       - setup_remote_docker
 #       - attach_workspace:
 #           at: ~/
@@ -228,7 +228,7 @@ jobs:
 #       - image: cimg/python:3.10
 #     steps:
 #       - checkout
-#       - installAwsCli
+#       - install_awscli
 #       - attach_workspace:
 #           at: ~/
 #       - run:
@@ -253,4 +253,4 @@ jobs:
 workflows:
   wordpress-workflow:
     jobs:
-      - SyntaxValidation
+      - syntax_validation
