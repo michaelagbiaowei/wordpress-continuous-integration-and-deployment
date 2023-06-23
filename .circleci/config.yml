@@ -116,7 +116,7 @@ jobs:
       # - notify_on_failure
 
 # DEPLOY INFRASTRUCTURE
-  deployVpcStack:
+  deploy_vpc_stack:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -254,3 +254,5 @@ workflows:
   wordpress-workflow:
     jobs:
       - syntax_validation
+      - deploy_vpc_stack:
+          requires: [syntax_validation]
