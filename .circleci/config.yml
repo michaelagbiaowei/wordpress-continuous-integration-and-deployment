@@ -29,13 +29,14 @@ commands:
     description: Install AWS CLI v2
     steps:
       - run:
-          name: Install Docker client
+          name: Install Docker Compose
+          environment:
+            COMPOSE_VERSION: '2.19.0'
           command: |
-            set -x
-            VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            sudo mv /tmp/docker/* /usr/bin
+            curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+
 
   install_docker_compose_cli:
     description: Install AWS CLI v2
@@ -283,17 +284,17 @@ workflows:
         # - deploy_app:
         #     requires: [build_app]
 
-      - run:
-          name: Start docker-compose and verify service(s)
-          command: |
-            # Setting the Docker Compose project name to "circleci-demo-docker" means
-            # the names of our services' containers would be prefixed with "circleci-demo-docker".
-            docker-compose --project circleci-demo-docker up -d
+      # - run:
+      #     name: Start docker-compose and verify service(s)
+      #     command: |
+      #       # Setting the Docker Compose project name to "circleci-demo-docker" means
+      #       # the names of our services' containers would be prefixed with "circleci-demo-docker".
+      #       docker-compose --project circleci-demo-docker up -d
 
-            # In this example, we have a "contacts" service, and
-            # we are trying to check, via `dockerize`, if the service is ready.
-            docker container run --network container:circleci-demo-docker_contacts_1 \
-              docker.io/jwilder/dockerize \
-              -wait http://localhost:8080/healthcheck \
-              -wait-retry-interval 2s \
-              -timeout 20s
+      #       # In this example, we have a "contacts" service, and
+      #       # we are trying to check, via `dockerize`, if the service is ready.
+      #       docker container run --network container:circleci-demo-docker_contacts_1 \
+      #         docker.io/jwilder/dockerize \
+      #         -wait http://localhost:8080/healthcheck \
+      #         -wait-retry-interval 2s \
+      #         -timeout 20s
