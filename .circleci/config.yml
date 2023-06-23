@@ -162,7 +162,7 @@ jobs:
           name: Get Database Instance Endpoint annd save in a vaiable
           command: |
             export DB_ENDPOINT=$(aws rds describe-db-instances \
-            --db-instance-identifier $DB_INSTANCE_IDENTIFIER \
+            --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
             --query 'DBInstances[*].Endpoint.Address' \
             --output text)
 

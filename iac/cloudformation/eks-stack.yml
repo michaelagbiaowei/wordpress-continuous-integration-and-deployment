@@ -63,7 +63,7 @@ Parameters:
     Default: 1.27
   NodeGroupInstanceTypes:
     Type: String
-    Default: "t2.medium"
+    Default: "t2.micro"
 
 Resources:
   # VPC:

@@ -21,7 +21,7 @@ Parameters:
   DBInstanceIdentifier:
     Description: Type a name for your DB instance.First character must be a letter.1-60 alphanumeric characters.
     Type: String
-    Default: wordpressidentifier
+    Default: ${DB_INSTANCE_IDENTIFIER}
   DBName:
     Description: Database Name
     Type: String
@@ -33,7 +33,7 @@ Parameters:
   MasterUsername:
     Description: Database administration name.
     Type: String
-    Default: wordpressuser
+    Default: ${DB_USERNAME}
     MinLength: '1'
     MaxLength: '16'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
