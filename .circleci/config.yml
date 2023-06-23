@@ -135,66 +135,66 @@ jobs:
       - destroy_vpc_stack_environment
 
 
-#   deployRdsStack:
-#     docker:
-#       - image: amazon/aws-cli
-#     steps:
-#       - checkout
-#       - run:
-#           name: Provision Database Instance
-#           command: |
-#             aws cloudformation deploy \
-#               --template-file iac/cloudformation/rds-stack.yml \
-#               --tags project=wordpress-project \
-#               --stack-name "wordpress-rds-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
-#               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-#               --parameters-file rds-parameters.json \
-#               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+  deploy_rds_stack:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Provision Database Instance
+          command: |
+            aws cloudformation deploy \
+              --template-file iac/cloudformation/rds-stack.yml \
+              --tags project=wordpress-project \
+              --stack-name "wordpress-rds-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides file://iac/cloudformation/rds-parameters.json \
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+
+      # - notify_on_failure
+      - destroy_rds_stack_environment
+
+  get_rds_endpoint:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Get Database Instance Endpoint annd save in a vaiable
+          command: |
+            export DB_ENDPOINT=$(aws rds describe-db-instances \
+            --db-instance-identifier $DB_INSTANCE_IDENTIFIER \
+            --query 'DBInstances[*].Endpoint.Address' \
+            --output text)
+
+            echo ${DB_ENDPOINT} > .env
+            echo ${DB_ENDPOINT}
+            cat .env
+
+      # - notify_on_failure
+      - destroy_rds_stack_environment
+
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.env
+
+  deploy_eks_stack:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Set up Kubernetes Cluster
+          command: |
+            aws cloudformation deploy \
+              --template-file iac/cloudformation/eks-stack.yml \
+              --tags project=wordpress-project \
+              --stack-name "wordpress-eks-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides file://iac/cloudformation/eks-parameters.json \
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
 #       - notify_on_failure
-#       - destroy_rds_stack_environment
-
-#   getRdsEndpoint:
-#     docker:
-#       - image: amazon/aws-cli
-#     steps:
-#       - checkout
-#       - run:
-#           name: Get Database Instance Endpoint annd save in a vaiable
-#           command: |
-#             export DB_ENDPOINT=$(aws rds describe-db-instances \
-#             --db-instance-identifier $DB_INSTANCE_IDENTIFIER \
-#             --query 'DBInstances[*].Endpoint.Address' \
-#             --output text)
-
-#             echo ${DB_ENDPOINT} > .env
-
-#       - notify_on_failure
-#       - destroy_rds_stack_environment
-
-#       - persist_to_workspace:
-#           root: ~/
-#           paths:
-#             - project/.env
-
-#  deployEksStack:
-#     docker:
-#       - image: amazon/aws-cli
-#     steps:
-#       - checkout
-#       - run:
-#           name: Provision Kubernetes Cluster
-#           command: |
-#             aws cloudformation deploy \
-#               --template-file iac/cloudformation/eks-stack.yml \
-#               --tags project=wordpress-project \
-#               --stack-name "wordpress-eks-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
-#               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-#               --parameters-file eks-parameters.json \
-#               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
-
-#       - notify_on_failure
-#       - destroy_eks_stack_environment
+      - destroy_eks_stack_environment
 
 #   # BUILD APPLICATION
 #   buildApp:
@@ -252,6 +252,13 @@ jobs:
 workflows:
   wordpress-workflow:
     jobs:
-      # - syntax_validation
-      - deploy_vpc_stack
-          # requires: [syntax_validation]
+      - syntax_validation
+      - deploy_vpc_stack:
+          requires: [syntax_validation]
+      - deploy_rds_stack:
+          requires: [deploy_vpc_stack]
+      - get_rds_endpoint:
+          requires: [deploy_rds_stack]
+      - deploy_eks_stack:
+          requires: [deploy_vpc_stack]
+

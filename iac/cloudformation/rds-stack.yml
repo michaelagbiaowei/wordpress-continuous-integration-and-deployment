@@ -25,7 +25,7 @@ Parameters:
   DBName:
     Description: Database Name
     Type: String
-    Default: wordpressdb
+    Default: ${DB_NAME}
     MinLength: '4'
     MaxLength: '64'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
@@ -42,7 +42,7 @@ Parameters:
     NoEcho: 'true'
     Description: Database administration password.
     Type: String
-    Default: wordpressPASSWORD12345
+    Default: ${DB_PASSWORD}
     MinLength: '8'
     AllowedPattern: "[a-zA-Z0-9!?]*"
     ConstraintDescription: Must only contain upper and lowercase letters and numbers
@@ -102,7 +102,7 @@ Mappings:
   Settings:
     MySQL:
       Engine: MySQL
-      Version: '8.0.28'
+      Version: '8.0.32'
 Conditions:
   ConfigureSnapshotOnDelete:
     Fn::Equals:
