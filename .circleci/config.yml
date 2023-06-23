@@ -271,7 +271,7 @@ workflows:
       #     requires: [syntax_validation]
       # - deploy_rds_stack:
           # requires: [deploy_vpc_stack]
-      - get_rds_endpoint:
+      # - get_rds_endpoint:
           # requires: [deploy_rds_stack]
       # - deploy_eks_stack:
           # requires: [deploy_vpc_stack]
