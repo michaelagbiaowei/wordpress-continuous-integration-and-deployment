@@ -42,6 +42,7 @@ Parameters:
     NoEcho: 'true'
     Description: Database administration password.
     Type: String
+    Default: wordpressPASSWORD12345
     MinLength: '8'
     AllowedPattern: "[a-zA-Z0-9!?]*"
     ConstraintDescription: Must only contain upper and lowercase letters and numbers
