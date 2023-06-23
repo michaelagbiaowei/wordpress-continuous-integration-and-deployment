@@ -174,13 +174,13 @@ jobs:
             echo ${DB_ENDPOINT}
             cat .env
 
-      # - notify_on_failure
-      - destroy_rds_stack_environment
-
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.env
+
+      # - notify_on_failure
+      # - destroy_rds_stack_environment
 
   deploy_eks_stack:
     docker:
@@ -201,8 +201,8 @@ jobs:
 #       - notify_on_failure
       - destroy_eks_stack_environment
 
-#   # BUILD APPLICATION
-#   buildApp:
+  # BUILD APPLICATION
+#   build_app:
 #     docker:
 #       - image: cimg/python:3.10
 #     steps:
@@ -210,8 +210,6 @@ jobs:
 #       - install_docker_engine
 #       - Install_docker_compose_cli
 #       - setup_remote_docker
-#       - attach_workspace:
-#           at: ~/
 #       - run:
 #           name: Build Docker image
 #           command: |
@@ -223,11 +221,17 @@ jobs:
 #             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 #             docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
 #             docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
+
+#       - persist_to_workspace:
+#           root: ~/
+#           paths:
+#             - project/.env
+
             
-#       - notify_on_failure
+# #       - notify_on_failure
 
 #   # DEPLOY APPLICATION
-#   deployApp:
+#   deploy_app:
 #     docker:
 #       - image: cimg/python:3.10
 #     steps:
@@ -246,6 +250,11 @@ jobs:
 
 #             kubectl get deployments -w
 
+#       - persist_to_workspace:
+#           root: ~/
+#           paths:
+#             - project/.env
+
 #       - notify_on_failure
 
 
@@ -260,10 +269,14 @@ workflows:
       # - syntax_validation
       # - deploy_vpc_stack:
       #     requires: [syntax_validation]
-      - deploy_rds_stack
+      # - deploy_rds_stack
           # requires: [deploy_vpc_stack]
-      - get_rds_endpoint:
+      - get_rds_endpoint
           requires: [deploy_rds_stack]
       # - deploy_eks_stack:
           # requires: [deploy_vpc_stack]
+        # - build_app:
+        #     requires: [get_rds_endpoint]
+        # - deploy_app:
+        #     requires: [build_app]
 
