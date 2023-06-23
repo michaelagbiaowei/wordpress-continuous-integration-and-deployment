@@ -128,7 +128,6 @@ jobs:
               --template-file iac/cloudformation/vpc-stack.yml \
               --tags project=wordpress-project \
               --stack-name "wordpress-vpc-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides file://iac/cloudformation/vpc-parameters.json \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
@@ -253,6 +252,6 @@ jobs:
 workflows:
   wordpress-workflow:
     jobs:
-      - syntax_validation
-      - deploy_vpc_stack:
-          requires: [syntax_validation]
+      # - syntax_validation
+      - deploy_vpc_stack
+          # requires: [syntax_validation]

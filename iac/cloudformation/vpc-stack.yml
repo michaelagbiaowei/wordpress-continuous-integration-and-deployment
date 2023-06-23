@@ -45,14 +45,14 @@ Resources:
       EnableDnsHostnames: true
       Tags:
         - Key: Name
-          Value: !Ref EnvironmentName-${ID}
+          Value: !Ref EnvironmentName
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
-          Value: !Ref EnvironmentName-${ID}
+          Value: !Ref EnvironmentName
 
   InternetGatewayAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
@@ -69,7 +69,7 @@ Resources:
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-${ID} Public Subnet (AZ1)
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
 
   PublicSubnet2:
     Type: AWS::EC2::Subnet
@@ -80,7 +80,7 @@ Resources:
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-${ID} Public Subnet (AZ2)
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
 
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
@@ -91,7 +91,7 @@ Resources:
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-${ID} Private Subnet (AZ1)
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
 
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
@@ -102,7 +102,7 @@ Resources:
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-${ID} Private Subnet (AZ2)
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
 
   PrivateSubnet3:
     Type: AWS::EC2::Subnet
@@ -113,7 +113,7 @@ Resources:
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-${ID} Private Subnet (AZ3)
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ3)
 
     Type: AWS::EC2::Subnet
     Properties:
@@ -123,7 +123,7 @@ Resources:
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-${ID} Private Subnet (AZ2)
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
 
   NatGateway1EIP:
     Type: AWS::EC2::EIP
@@ -155,7 +155,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-${ID} Public Routes
+          Value: !Sub ${EnvironmentName} Public Routes
 
   DefaultPublicRoute:
     Type: AWS::EC2::Route
@@ -183,7 +183,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-${ID} Private Routes (AZ1)
+          Value: !Sub ${EnvironmentName} Private Routes (AZ1)
 
   DefaultPrivateRoute1:
     Type: AWS::EC2::Route
@@ -204,7 +204,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-${ID} Private Routes (AZ2)
+          Value: !Sub ${EnvironmentName} Private Routes (AZ2)
 
   DefaultPrivateRoute2:
     Type: AWS::EC2::Route
@@ -225,7 +225,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-${ID} Private Routes (AZ3)
+          Value: !Sub ${EnvironmentName} Private Routes (AZ3)
 
   DefaultPrivateRoute3:
     Type: AWS::EC2::Route
@@ -245,70 +245,70 @@ Outputs:
     Description: A reference to the created VPC
     Value: !Ref VPC
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-VPCID
+      Name: !Sub ${EnvironmentName}-VPCID
 
   VPCPublicRouteTable:
     Description: Public Routing
     Value: !Ref PublicRouteTable
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PUB-RT
+      Name: !Sub ${EnvironmentName}-PUB-RT
 
   VPCPrivateRouteTable1:
     Description: Private Routing AZ1
     Value: !Ref PrivateRouteTable1
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PRI1-RT
+      Name: !Sub ${EnvironmentName}-PRI1-RT
 
   VPCPrivateRouteTable2:
     Description: Private Routing AZ2
     Value: !Ref PrivateRouteTable2
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PRI2-RT
+      Name: !Sub ${EnvironmentName}-PRI2-RT
 
   VPCPrivateRouteTable3:
     Description: Private Routing AZ3
     Value: !Ref PrivateRouteTable3
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PRI3-RT
+      Name: !Sub ${EnvironmentName}-PRI3-RT
 
   PublicSubnets:
     Description: A list of the public subnets
     Value: !Join [",", [!Ref PublicSubnet1, !Ref PublicSubnet2]]
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PUB-NETS
+      Name: !Sub ${EnvironmentName}-PUB-NETS
 
   PrivateSubnets:
     Description: A list of the private subnets
     Value: !Join [",", [!Ref PrivateSubnet1, !Ref PrivateSubnet2]]
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PRIV-NETS
+      Name: !Sub ${EnvironmentName}-PRIV-NETS
 
   PublicSubnet1:
     Description: A reference to the public subnet in the 1st Availability Zone
     Value: !Ref PublicSubnet1
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PUB1-SN
+      Name: !Sub ${EnvironmentName}-PUB1-SN
 
   PublicSubnet2:
     Description: A reference to the public subnet in the 2nd Availability Zone
     Value: !Ref PublicSubnet2
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PUB2-SN
+      Name: !Sub ${EnvironmentName}-PUB2-SN
 
   PrivateSubnet1:
     Description: A reference to the private subnet in the 1st Availability Zone
     Value: !Ref PrivateSubnet1
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PRI1-SN
+      Name: !Sub ${EnvironmentName}-PRI1-SN
 
   PrivateSubnet2:
     Description: A reference to the private subnet in the 2nd Availability Zone
     Value: !Ref PrivateSubnet2
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PRI2-SN
+      Name: !Sub ${EnvironmentName}-PRI2-SN
 
   PrivateSubnet3:
     Description: A reference to the private subnet in the 2nd Availability Zone
     Value: !Ref PrivateSubnet3
     Export:
-      Name: !Sub ${EnvironmentName}-${ID}-PRI3-SN
+      Name: !Sub ${EnvironmentName}-PRI3-SN
