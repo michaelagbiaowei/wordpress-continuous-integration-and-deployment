@@ -129,7 +129,7 @@ jobs:
               --tags project=wordpress-project \
               --stack-name "wordpress-vpc-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameters-file vpc-parameters.json \
+              --parameter-overrides file://iac/cloudformation/vpc-parameters.json \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
       # - notify_on_failure
