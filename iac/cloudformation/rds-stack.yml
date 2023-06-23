@@ -33,7 +33,7 @@ Parameters:
   MasterUsername:
     Description: Database administration name.
     Type: String
-    Default: wordpressuser12345
+    Default: wordpressuser
     MinLength: '1'
     MaxLength: '16'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
