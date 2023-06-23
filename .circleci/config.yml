@@ -142,6 +142,7 @@ jobs:
       - checkout
       - run:
           name: Provision Database Instance
+          no_output_timeout: 30m
           command: |
             aws cloudformation deploy \
               --template-file iac/cloudformation/rds-stack.yml \
@@ -185,6 +186,7 @@ jobs:
       - checkout
       - run:
           name: Set up Kubernetes Cluster
+          no_output_timeout: 30m
           command: |
             aws cloudformation deploy \
               --template-file iac/cloudformation/eks-stack.yml \
