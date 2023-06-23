@@ -115,25 +115,25 @@ jobs:
 
       # - notify_on_failure
 
-# DEPLOY INFRASTRUCTURE
-#   deployVpcStack:
-#     docker:
-#       - image: amazon/aws-cli
-#     steps:
-#       - checkout
-#       - run:
-#           name: Provision network infrastructure
-#           command: |
-#             aws cloudformation deploy \
-#               --template-file iac/cloudformation/vpc-stack.yml \
-#               --tags project=wordpress-project \
-#               --stack-name "wordpress-vpc-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
-#               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-#               --parameters-file vpc-parameters.json \
-#               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+DEPLOY INFRASTRUCTURE
+  deployVpcStack:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Provision network infrastructure
+          command: |
+            aws cloudformation deploy \
+              --template-file iac/cloudformation/vpc-stack.yml \
+              --tags project=wordpress-project \
+              --stack-name "wordpress-vpc-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameters-file vpc-parameters.json \
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
-#       - notify_on_failure
-#       - destroy_vpc_stack_environment
+      # - notify_on_failure
+      - destroy_vpc_stack_environment
 
 
 #   deployRdsStack:

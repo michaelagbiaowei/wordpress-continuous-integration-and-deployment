@@ -245,7 +245,7 @@ Outputs:
     Description: A reference to the created VPC
     Value: !Ref VPC
     Export:
-      Name: !Sub ${EnvironmentName}-VPCID
+      Name: !Sub ${EnvironmentName}-${ID}-VPCID
 
   VPCPublicRouteTable:
     Description: Public Routing
@@ -299,16 +299,16 @@ Outputs:
     Description: A reference to the private subnet in the 1st Availability Zone
     Value: !Ref PrivateSubnet1
     Export:
-      Name: !Sub ${EnvironmentName}-PRI1-SN
+      Name: !Sub ${EnvironmentName}-${ID}-PRI1-SN
 
   PrivateSubnet2:
     Description: A reference to the private subnet in the 2nd Availability Zone
     Value: !Ref PrivateSubnet2
     Export:
-      Name: !Sub ${EnvironmentName}-PRI2-SN
+      Name: !Sub ${EnvironmentName}-${ID}-PRI2-SN
 
   PrivateSubnet3:
     Description: A reference to the private subnet in the 2nd Availability Zone
     Value: !Ref PrivateSubnet3
     Export:
-      Name: !Sub ${EnvironmentName}-PRI3-SN
+      Name: !Sub ${EnvironmentName}-${ID}-PRI3-SN
