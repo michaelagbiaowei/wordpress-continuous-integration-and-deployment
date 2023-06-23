@@ -208,7 +208,7 @@ jobs:
     steps:
       - checkout
       - install_docker_engine
-      - Install_docker_compose_cli
+      - install_docker_compose_cli
       - setup_remote_docker
       - run:
           name: Build Docker image
