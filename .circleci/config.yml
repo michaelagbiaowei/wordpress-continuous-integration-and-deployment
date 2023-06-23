@@ -116,133 +116,133 @@ jobs:
       # - notify_on_failure
 
 # DEPLOY INFRASTRUCTURE
-  deployVpcStack:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Provision network infrastructure
-          command: |
-            aws cloudformation deploy \
-              --template-file iac/cloudformation/vpc-stack.yml \
-              --tags project=wordpress-project \
-              --stack-name "wordpress-vpc-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameters-file vpc-parameters.json \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+#   deployVpcStack:
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Provision network infrastructure
+#           command: |
+#             aws cloudformation deploy \
+#               --template-file iac/cloudformation/vpc-stack.yml \
+#               --tags project=wordpress-project \
+#               --stack-name "wordpress-vpc-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
+#               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+#               --parameters-file vpc-parameters.json \
+#               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
-      - notify_on_failure
-      - destroyVpcStackEnvironment
+#       - notify_on_failure
+#       - destroyVpcStackEnvironment
 
 
-  deployRdsStack:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Provision Database Instance
-          command: |
-            aws cloudformation deploy \
-              --template-file iac/cloudformation/rds-stack.yml \
-              --tags project=wordpress-project \
-              --stack-name "wordpress-rds-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameters-file rds-parameters.json \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+#   deployRdsStack:
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Provision Database Instance
+#           command: |
+#             aws cloudformation deploy \
+#               --template-file iac/cloudformation/rds-stack.yml \
+#               --tags project=wordpress-project \
+#               --stack-name "wordpress-rds-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
+#               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+#               --parameters-file rds-parameters.json \
+#               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
-      - notify_on_failure
-      - destroyRdsStackEnvironment
+#       - notify_on_failure
+#       - destroyRdsStackEnvironment
 
-  getRdsEndpoint:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Get Database Instance Endpoint annd save in a vaiable
-          command: |
-            export DB_ENDPOINT=$(aws rds describe-db-instances \
-            --db-instance-identifier $DB_INSTANCE_IDENTIFIER \
-            --query 'DBInstances[*].Endpoint.Address' \
-            --output text)
+#   getRdsEndpoint:
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Get Database Instance Endpoint annd save in a vaiable
+#           command: |
+#             export DB_ENDPOINT=$(aws rds describe-db-instances \
+#             --db-instance-identifier $DB_INSTANCE_IDENTIFIER \
+#             --query 'DBInstances[*].Endpoint.Address' \
+#             --output text)
 
-            echo ${DB_ENDPOINT} > .env
+#             echo ${DB_ENDPOINT} > .env
 
-      - notify_on_failure
-      - destroyRdsStackEnvironment
+#       - notify_on_failure
+#       - destroyRdsStackEnvironment
 
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.env
+#       - persist_to_workspace:
+#           root: ~/
+#           paths:
+#             - project/.env
 
- deployEksStack:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Provision Kubernetes Cluster
-          command: |
-            aws cloudformation deploy \
-              --template-file iac/cloudformation/eks-stack.yml \
-              --tags project=wordpress-project \
-              --stack-name "wordpress-eks-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameters-file eks-parameters.json \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+#  deployEksStack:
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Provision Kubernetes Cluster
+#           command: |
+#             aws cloudformation deploy \
+#               --template-file iac/cloudformation/eks-stack.yml \
+#               --tags project=wordpress-project \
+#               --stack-name "wordpress-eks-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
+#               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+#               --parameters-file eks-parameters.json \
+#               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
-      - notify_on_failure
-      - destroyEksStackEnvironment
+#       - notify_on_failure
+#       - destroyEksStackEnvironment
 
-  # BUILD APPLICATION
-  buildApp:
-    docker:
-      - image: cimg/python:3.10
-    steps:
-      - checkout
-      - installDockerEngine
-      - InstallDockerComposeCli
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: Build Docker image
-          command: |
-            docker compose up -d
-      - run:
-          name: Push to Docker Hub
-          command: |
-            echo "$DOCKER_PASSWORD"
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
-            docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
+#   # BUILD APPLICATION
+#   buildApp:
+#     docker:
+#       - image: cimg/python:3.10
+#     steps:
+#       - checkout
+#       - installDockerEngine
+#       - InstallDockerComposeCli
+#       - setup_remote_docker
+#       - attach_workspace:
+#           at: ~/
+#       - run:
+#           name: Build Docker image
+#           command: |
+#             docker compose up -d
+#       - run:
+#           name: Push to Docker Hub
+#           command: |
+#             echo "$DOCKER_PASSWORD"
+#             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+#             docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
+#             docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
             
-      - notify_on_failure
+#       - notify_on_failure
 
-  # DEPLOY APPLICATION
-  deployApp:
-    docker:
-      - image: cimg/python:3.10
-    steps:
-      - checkout
-      - installAwsCli
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: Install kubectl
-          command: |
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            chmod +x ./kubectl
-            sudo mv ./kubectl /usr/local/bin/kubectl
-            aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
-            kubectl apply -f operations/wordpress/
+#   # DEPLOY APPLICATION
+#   deployApp:
+#     docker:
+#       - image: cimg/python:3.10
+#     steps:
+#       - checkout
+#       - installAwsCli
+#       - attach_workspace:
+#           at: ~/
+#       - run:
+#           name: Install kubectl
+#           command: |
+#             curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+#             chmod +x ./kubectl
+#             sudo mv ./kubectl /usr/local/bin/kubectl
+#             aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+#             kubectl apply -f operations/wordpress/
 
-            kubectl get deployments -w
+#             kubectl get deployments -w
 
-      - notify_on_failure
+#       - notify_on_failure
 
 
 
