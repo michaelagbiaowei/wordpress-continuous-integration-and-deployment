@@ -112,10 +112,10 @@ jobs:
                 fi
             done
 
-      - notify_on_failure
+      # - notify_on_failure
 
 # DEPLOY INFRASTRUCTURE
- deployVpcStack:
+  deployVpcStack:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -135,7 +135,7 @@ jobs:
       - destroyVpcStackEnvironment
 
 
- deployRdsStack:
+  deployRdsStack:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -153,6 +153,29 @@ jobs:
 
       - notify_on_failure
       - destroyRdsStackEnvironment
+
+  getRdsEndpoint:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Get Database Instance Endpoint annd save in a vaiable
+          command: |
+            export DB_ENDPOINT=$(aws rds describe-db-instances \
+            --db-instance-identifier $DB_INSTANCE_IDENTIFIER \
+            --query 'DBInstances[*].Endpoint.Address' \
+            --output text)
+
+            echo ${DB_ENDPOINT} > .env
+
+      - notify_on_failure
+      - destroyRdsStackEnvironment
+
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.env
 
  deployEksStack:
     docker:
@@ -182,6 +205,8 @@ jobs:
       - installDockerEngine
       - InstallDockerComposeCli
       - setup_remote_docker
+      - attach_workspace:
+          at: ~/
       - run:
           name: Build Docker image
           command: |
@@ -191,9 +216,31 @@ jobs:
           command: |
             echo "$DOCKER_PASSWORD"
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker tag $APP:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
+            docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
             docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
             
+      - notify_on_failure
+
+  # DEPLOY APPLICATION
+  deployApp:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - installAwsCli
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install kubectl
+          command: |
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
+            aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+            kubectl apply -f operations/wordpress/
+
+            kubectl get deployments -w
+
       - notify_on_failure
 
 
@@ -203,6 +250,6 @@ jobs:
 
 
 workflows:
-  say-hello-workflow:
+  wordpress-workflow:
     jobs:
-      - say-hello
+      - SyntaxValidation
