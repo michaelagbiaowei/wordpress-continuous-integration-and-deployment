@@ -213,7 +213,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker compose up
+            docker-compose up
       - run:
           name: Push to Docker Hub
           command: |
