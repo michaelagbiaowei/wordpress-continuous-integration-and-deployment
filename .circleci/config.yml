@@ -201,34 +201,34 @@ jobs:
 #       - notify_on_failure
       - destroy_eks_stack_environment
 
-  # BUILD APPLICATION
-#   build_app:
-#     docker:
-#       - image: cimg/python:3.10
-#     steps:
-#       - checkout
-#       - install_docker_engine
-#       - Install_docker_compose_cli
-#       - setup_remote_docker
-#       - run:
-#           name: Build Docker image
-#           command: |
-#             docker compose up -d
-#       - run:
-#           name: Push to Docker Hub
-#           command: |
-#             echo "$DOCKER_PASSWORD"
-#             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-#             docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
-#             docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
+# BUILD APPLICATION
+  build_app:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - install_docker_engine
+      - Install_docker_compose_cli
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: |
+            docker compose up -d
+      - run:
+          name: Push to Docker Hub
+          command: |
+            echo "$DOCKER_PASSWORD"
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
+            docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
 
-#       - persist_to_workspace:
-#           root: ~/
-#           paths:
-#             - project/.env
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.env
 
             
-# #       - notify_on_failure
+#       - notify_on_failure
 
 #   # DEPLOY APPLICATION
 #   deploy_app:
@@ -269,13 +269,13 @@ workflows:
       # - syntax_validation
       # - deploy_vpc_stack:
       #     requires: [syntax_validation]
-      # - deploy_rds_stack
+      # - deploy_rds_stack:
           # requires: [deploy_vpc_stack]
-      - get_rds_endpoint
+      - get_rds_endpoint:
           # requires: [deploy_rds_stack]
       # - deploy_eks_stack:
           # requires: [deploy_vpc_stack]
-        # - build_app:
+        - build_app
         #     requires: [get_rds_endpoint]
         # - deploy_app:
         #     requires: [build_app]
