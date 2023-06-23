@@ -207,13 +207,16 @@ jobs:
       - image: cimg/python:3.10
     steps:
       - checkout
-      - install_docker_engine
+      # - install_docker_engine
       - install_docker_compose_cli
       - setup_remote_docker
       - run:
-          name: Build Docker image
+          name: Build and Start all services declared in docker-compose.yml
           command: |
-            docker-compose up
+            docker-compose up -d
+            -wait http://localhost:8080/healthcheck \
+            -wait-retry-interval 2s \
+            -timeout 20s
       - run:
           name: Push to Docker Hub
           command: |
@@ -280,3 +283,17 @@ workflows:
         # - deploy_app:
         #     requires: [build_app]
 
+      - run:
+          name: Start docker-compose and verify service(s)
+          command: |
+            # Setting the Docker Compose project name to "circleci-demo-docker" means
+            # the names of our services' containers would be prefixed with "circleci-demo-docker".
+            docker-compose --project circleci-demo-docker up -d
+
+            # In this example, we have a "contacts" service, and
+            # we are trying to check, via `dockerize`, if the service is ready.
+            docker container run --network container:circleci-demo-docker_contacts_1 \
+              docker.io/jwilder/dockerize \
+              -wait http://localhost:8080/healthcheck \
+              -wait-retry-interval 2s \
+              -timeout 20s
