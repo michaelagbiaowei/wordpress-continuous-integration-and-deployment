@@ -211,17 +211,17 @@ jobs:
       - install_awscli
       - install_docker_compose_cli
       - setup_remote_docker
-      # - run:
-      #     name: Get Database Instance Endpoint annd save in a vaiable
-      #     command: |
-      #       export DB_ENDPOINT=$(aws rds describe-db-instances \
-      #       --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
-      #       --query 'DBInstances[*].Endpoint.Address' \
-      #       --output text)
+      - run:
+          name: Get Database Instance Endpoint annd save in a vaiable
+          command: |
+            export DB_ENDPOINT=$(aws rds describe-db-instances \
+            --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
+            --query 'DBInstances[*].Endpoint.Address' \
+            --output text)
 
-      #       echo ${DB_ENDPOINT} > .env
-      #       echo ${DB_ENDPOINT}
-      #       cat .env
+            echo ${DB_ENDPOINT} > .env
+            echo ${DB_ENDPOINT}
+            cat .env
 
       - run:
           name: Build and Start all services declared in docker-compose.yml
