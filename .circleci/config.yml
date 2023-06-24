@@ -203,7 +203,7 @@ jobs:
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
-            # docker-compose build
+            docker-compose build
             
             echo ${DB_ENDPOINT}
             cat .env
@@ -226,8 +226,8 @@ jobs:
 #     steps:
 #       - checkout
 #       - install_awscli
-#       - attach_workspace:
-#           at: ~/
+      # - attach_workspace:
+      #     at: ~/
 #       - run:
 #           name: Install kubectl
 #           command: |
@@ -238,9 +238,6 @@ jobs:
 #             kubectl apply -f operations/wordpress/
 
 #             kubectl get deployments -w
-
-      # - attach_workspace:
-      #     at: ~/
 
 #       - notify_on_failure
 
@@ -254,12 +251,12 @@ workflows:
   wordpress-workflow:
     jobs:
       # - syntax_validation
-      # - deploy_vpc_stack:
+      - deploy_vpc_stack
           # requires: [syntax_validation]
-      # - deploy_rds_stack:
-          # requires: [deploy_vpc_stack]
-      - get_rds_endpoint
-          # requires: [deploy_rds_stack]
+      - deploy_rds_stack:
+          requires: [deploy_vpc_stack]
+      - get_rds_endpoint:
+          requires: [deploy_rds_stack]
       # - deploy_eks_stack:
       #     requires: [deploy_vpc_stack]
       - build_app:
