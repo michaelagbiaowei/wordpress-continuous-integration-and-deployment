@@ -261,8 +261,8 @@ workflows:
           requires: [deploy_rds_stack]
       # - deploy_eks_stack:
       #     requires: [deploy_vpc_stack]
-        - build_app:
-            requires: [get_rds_endpoint]
+      - build_app:
+          requires: [get_rds_endpoint]
         # - deploy_app:
         #     requires: [build_app]
 
