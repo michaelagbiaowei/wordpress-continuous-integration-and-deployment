@@ -6,11 +6,11 @@ services:
     restart: unless-stopped
     ports:
       - 8080:80
-    environment:
-      WORDPRESS_DB_HOST: "${DB_ENDPOINT}:${DB_PORT}"
-      WORDPRESS_DB_USER: ${DB_USERNAME}
-      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
-      WORDPRESS_DB_NAME: ${DB_DATABASE}
+    # environment:
+      # WORDPRESS_DB_HOST: "${DB_ENDPOINT}:${DB_PORT}"
+      # WORDPRESS_DB_USER: ${DB_USERNAME}
+      # WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      # WORDPRESS_DB_NAME: ${DB_DATABASE}
     volumes: 
       - wp_data:/var/www/html
     networks:

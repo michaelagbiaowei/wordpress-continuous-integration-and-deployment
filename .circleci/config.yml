@@ -227,12 +227,12 @@ jobs:
           name: Build and Start all services declared in docker-compose.yml
           environment:
             WORDPRESS_DB_HOST: ${DB_ENDPOINT}
+            WORDPRESS_DB_USER: ${DB_USERNAME}
+            WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+            WORDPRESS_DB_NAME: ${DB_DATABASE}
           command: |
             docker-compose up -d
             cat .env
-            # --wait http://localhost:8080/healthcheck \
-            # --wait-retry-interval 2s \
-            # --timeout 20s
       - run:
           name: Push to Docker Hub
           command: |
