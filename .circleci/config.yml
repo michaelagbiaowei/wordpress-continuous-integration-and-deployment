@@ -152,7 +152,7 @@ jobs:
           command: |
             yum install -y tar gzip
       - run:
-          name: Get Database Instance Endpoint annd save in a vaiable
+          name: Get Database Instance Endpoint and save in a vaiable
           command: |
             export DB_ENDPOINT=$(aws rds describe-db-instances \
             --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
@@ -169,7 +169,7 @@ jobs:
             - project/.env
 
       # - notify_on_failure
-      # - destroy_rds_stack_environment
+      - destroy_rds_stack_environment
 
   deploy_eks_stack:
     docker:
@@ -189,9 +189,6 @@ jobs:
 
 #       - notify_on_failure
       - destroy_eks_stack_environment
-      - destroy_rds_stack_environment
-      - destroy_vpc_stack_environment
-
 
 # BUILD APPLICATION
   build_app:
@@ -204,23 +201,22 @@ jobs:
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
-            docker-compose up -d 
+            # docker-compose build
             
-      - run:
-          name: Push to Docker Hub
-          command: |
-            echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
-            docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
-            docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
-
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.env
-
+            echo ${DB_ENDPOINT}
+            cat .env
             
+      # - run:
+      #     name: Push to Docker Hub
+      #     command: |
+      #       echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+      #       docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
+      #       docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
+
+      - attach_workspace:
+          at: ~/
+           
 #       - notify_on_failure
-      - destroy_eks_stack_environment
 
 #   # DEPLOY APPLICATION
 #   deploy_app:
@@ -242,10 +238,8 @@ jobs:
 
 #             kubectl get deployments -w
 
-#       - persist_to_workspace:
-#           root: ~/
-#           paths:
-#             - project/.env
+      # - attach_workspace:
+      #     at: ~/
 
 #       - notify_on_failure
 
@@ -259,16 +253,16 @@ workflows:
   wordpress-workflow:
     jobs:
       # - syntax_validation
-      # - deploy_vpc_stack:
+      - deploy_vpc_stack
       #     requires: [syntax_validation]
-      # - deploy_rds_stack:
-          # requires: [deploy_vpc_stack]
-      # - get_rds_endpoint:
+      - deploy_rds_stack:
+          requires: [deploy_vpc_stack]
+      - get_rds_endpoint:
           # requires: [deploy_rds_stack]
       # - deploy_eks_stack:
           # requires: [deploy_vpc_stack]
         - build_app
-        #     requires: [get_rds_endpoint]
+            requires: [get_rds_endpoint]
         # - deploy_app:
         #     requires: [build_app]
 
