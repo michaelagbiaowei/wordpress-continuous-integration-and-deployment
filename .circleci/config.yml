@@ -198,6 +198,8 @@ jobs:
       - checkout
       - install_docker_compose_cli
       - setup_remote_docker
+      - attach_workspace:
+          at: ~/
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
@@ -213,8 +215,7 @@ jobs:
       #       docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
       #       docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
 
-      - attach_workspace:
-          at: ~/
+
            
 #       - notify_on_failure
 
@@ -253,12 +254,12 @@ workflows:
   wordpress-workflow:
     jobs:
       # - syntax_validation
-      # - deploy_vpc_stack
+      # - deploy_vpc_stack:
           # requires: [syntax_validation]
-      - deploy_rds_stack
+      # - deploy_rds_stack:
           # requires: [deploy_vpc_stack]
-      - get_rds_endpoint:
-          requires: [deploy_rds_stack]
+      - get_rds_endpoint
+          # requires: [deploy_rds_stack]
       # - deploy_eks_stack:
       #     requires: [deploy_vpc_stack]
       - build_app:
