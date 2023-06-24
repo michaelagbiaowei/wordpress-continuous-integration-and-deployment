@@ -233,7 +233,7 @@ jobs:
           command: |
             docker-compose up -d
             cat .env
-            docker inspect -f "{{.Name}} {{.Config.Env}}" wordpress
+            docker inspect -f "{{.Name}} {{.Config.Env}}" wordpress | grep WORDPRESS_DB_NAME
 
       # - run:
       #     name: Push to Docker Hub
