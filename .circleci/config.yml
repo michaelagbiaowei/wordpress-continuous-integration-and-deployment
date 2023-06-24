@@ -210,7 +210,7 @@ jobs:
     steps:
       - checkout
       - install_awscli
-      - install_docker_compose_cli
+      # - install_docker_compose_cli
       - install_docker_engine
       - setup_remote_docker
       - run:
