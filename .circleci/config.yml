@@ -203,7 +203,7 @@ jobs:
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
-            docker-compose up build
+            docker-compose up
             
             echo ${DB_ENDPOINT}
             cat .env
