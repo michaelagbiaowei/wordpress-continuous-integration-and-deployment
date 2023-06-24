@@ -26,23 +26,23 @@ commands:
             sudo ./aws/install
 
   install_docker_engine:
-    description: Install AWS CLI v2
+    description: Install Docker Engine v2
     steps:
       - run:
-          name: Install Docker Compose
-          environment:
-            COMPOSE_VERSION: '2.19.0'
+          name: Install Docker Client
           command: |
-            curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+            set -x
+            VER="24.0.2"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            sudo mv /tmp/docker/* /usr/bin
 
 
   install_docker_compose_cli:
     description: Install AWS CLI v2
     steps:
       - run:
-          name: Install Docker Compose
+          name: Install Docker Engine
           environment:
             COMPOSE_VERSION: '2.19.0'
           command: |
@@ -211,6 +211,7 @@ jobs:
       - checkout
       - install_awscli
       - install_docker_compose_cli
+      - install_docker_engine
       - setup_remote_docker
       - run:
           name: Get Database Instance Endpoint annd save in a vaiable
