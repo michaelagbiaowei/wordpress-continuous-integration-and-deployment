@@ -219,7 +219,7 @@ jobs:
       - run:
           name: Push to Docker Hub
           command: |
-            sudo apt install gnupg2 pass
+            sudo mv ~/.docker/config.json ~/.docker/config_old.json
             echo "$DOCKER_PASSWORD"
             docker login -u $DOCKER_USERNAME --password-stdin
             docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
