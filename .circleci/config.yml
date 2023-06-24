@@ -197,16 +197,18 @@ jobs:
     steps:
       - checkout
       - install_docker_compose_cli
+      - install_awscli
       - setup_remote_docker
       - attach_workspace:
           at: ~/
       - run:
           name: Build and Start all services declared in docker-compose.yml
+          environment:
+            WORDPRESS_DB_HOST: $(aws rds describe-db-instances \
+                  --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
+                  --query 'DBInstances[*].Endpoint.Address' \
+                  --output text)
           command: |
-            export WORDPRESS_DB_HOST=$(aws rds describe-db-instances \
-              --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
-              --query 'DBInstances[*].Endpoint.Address' \
-              --output text)
             docker-compose up -d
             echo ${WORDPRESS_DB_HOST}
             
