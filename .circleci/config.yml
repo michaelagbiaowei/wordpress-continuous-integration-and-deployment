@@ -215,12 +215,12 @@ jobs:
           name: Build and Start all services declared in docker-compose.yml
           command: |
             docker-compose up -d 
-
+            
       - run:
           name: Push to Docker Hub
           command: |
             echo "$DOCKER_PASSWORD"
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker login -u $DOCKER_USERNAME -p ${DOCKER_PASSWORD}
             docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
             docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
 
