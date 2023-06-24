@@ -225,15 +225,10 @@ jobs:
 
       - run:
           name: Build and Start all services declared in docker-compose.yml
-          environment:
-            WORDPRESS_DB_HOST: ${DB_ENDPOINT}
-            WORDPRESS_DB_USER: ${DB_USERNAME}
-            WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
-            WORDPRESS_DB_NAME: ${DB_DATABASE}
           command: |
-            docker-compose up -d
-            cat .env
-            docker inspect -f "{{.Name}} {{.Config.Env}}" wordpress | grep WORDPRESS_DB_NAME
+            docker-compose up -d -e WORDPRESS_DB_HOST="${DB_ENDPOINT}
+            echo ${DB_ENDPOINT}
+            # docker inspect -f "{{.Name}} {{.Config.Env}}" wordpress
 
       # - run:
       #     name: Push to Docker Hub
