@@ -226,7 +226,7 @@ jobs:
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
-            docker-compose up -d -e WORDPRESS_DB_HOST=${DB_ENDPOINT}
+            docker-compose up -d --e WORDPRESS_DB_HOST=${DB_ENDPOINT}
             echo ${DB_ENDPOINT}
             # docker inspect -f "{{.Name}} {{.Config.Env}}" wordpress
 
