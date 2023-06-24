@@ -25,30 +25,30 @@ commands:
             unzip awscliv2.zip
             sudo ./aws/install
 
-  install_docker_engine:
-    description: Install Docker Engine v2
-    steps:
-      - run:
-          name: Install Docker Client
-          command: |
-            set -x
-            VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            sudo mv /tmp/docker/* /usr/bin
+# install_docker_engine:
+#     description: Install AWS CLI v2
+#     steps:
+#       - run:
+#           name: Install Docker Compose
+#           environment:
+#             COMPOSE_VERSION: '2.19.0'
+#           command: |
+#             curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
+#             chmod +x ~/docker-compose
+#             sudo mv ~/docker-compose /usr/local/bin/docker-compose
 
 
   install_docker_compose_cli:
     description: Install AWS CLI v2
     steps:
-      - run:
-          name: Install Docker Engine
-          environment:
-            COMPOSE_VERSION: '2.19.0'
+     - run:
+          name: Install Docker Compose CLI plugin
           command: |
-            curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+            DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+            sudo mkdir -p $DOCKER_CONFIG/cli-plugins
+            sudo curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+            sudo chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+
 
 # DESTROY ENVIRONMENTS
   destroy_vpc_stack_environment:
