@@ -202,13 +202,14 @@ jobs:
       - attach_workspace:
           at: ~/
     environment:
-      WORDPRESS_DB_HOST: $(aws rds describe-db-instances \
-            --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
-            --query 'DBInstances[*].Endpoint.Address' \
-            --output text)
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
+            export WORDPRESS_DB_HOST=$(aws rds describe-db-instances \
+                    --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
+                    --query 'DBInstances[*].Endpoint.Address' \
+                    --output text)
+                    
             docker-compose up -d
             echo ${WORDPRESS_DB_HOST}
             
