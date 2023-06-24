@@ -189,6 +189,9 @@ jobs:
 
 #       - notify_on_failure
       - destroy_eks_stack_environment
+      - destroy_rds_stack_environment
+      - destroy_vpc_stack_environment
+
 
 # BUILD APPLICATION
   build_app:
@@ -206,9 +209,9 @@ jobs:
       - run:
           name: Push to Docker Hub
           command: |
-            sudo echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
-            sudo docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
-            sudo docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
+            echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+            docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
+            docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
 
       - persist_to_workspace:
           root: ~/
@@ -217,6 +220,7 @@ jobs:
 
             
 #       - notify_on_failure
+      - destroy_eks_stack_environment
 
 #   # DEPLOY APPLICATION
 #   deploy_app:

@@ -13,4 +13,4 @@ This repository contains the scripts for a CI/CD pipeline that deploys a WordPre
 
 These pipeline are configured to run on every push to the repository. This ensures that your application is always up-to-date and that any changes you make are deployed to production immediately.
 
-To learn more about how to use the pipeline, please see the README.md file.
+To learn more about how to use the pipeline, please see the readme.md file.
