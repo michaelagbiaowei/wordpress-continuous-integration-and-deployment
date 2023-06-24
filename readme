@@ -1,3 +1,5 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/michaelagbiaowei/wordpress-continuous-integration-and-deployment/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/michaelagbiaowei/wordpress-continuous-integration-and-deployment/tree/main)
+
 This repository contains the scripts for a CI/CD pipeline that deploys a WordPress application. The pipeline uses either CircleCI or Jenkins to automate the following steps:
 
 - Checkout the code from the repository
