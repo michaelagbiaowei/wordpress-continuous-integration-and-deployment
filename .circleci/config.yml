@@ -204,9 +204,7 @@ jobs:
           name: Build and Start all services declared in docker-compose.yml
           command: |
             docker-compose up -d
-            
-            echo ${DB_ENDPOINT}
-            cat .env
+            echo ${WORDPRESS_DB_HOST}
             
       # - run:
       #     name: Push to Docker Hub
