@@ -233,13 +233,15 @@ jobs:
           command: |
             docker-compose up -d
             cat .env
-      - run:
-          name: Push to Docker Hub
-          command: |
-            echo "$DOCKER_PASSWORD"
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
-            docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
+            docker inspect -f "{{.Name}} {{.Config.Env}}" wordpress
+
+      # - run:
+      #     name: Push to Docker Hub
+      #     command: |
+      #       echo "$DOCKER_PASSWORD"
+      #       docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      #       docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
+      #       docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
 
       - persist_to_workspace:
           root: ~/
