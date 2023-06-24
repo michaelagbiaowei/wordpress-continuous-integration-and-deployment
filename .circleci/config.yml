@@ -215,7 +215,7 @@ jobs:
       - run:
           name: Build and Start all services declared in docker-compose.yml
           environment:
-            WORDPRESS_DB_HOST: ${DB_ENDPOINT}
+            WORDPRESS_DB_HOST: ${env.DB_ENDPOINT}
           command: |
             docker-compose up -d
             echo ${WORDPRESS_DB_HOST}
