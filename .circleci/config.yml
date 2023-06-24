@@ -210,8 +210,8 @@ jobs:
     steps:
       - checkout
       - install_awscli
-      # - install_docker_compose_cli
-      - install_docker_engine
+      - install_docker_compose_cli
+      # - install_docker_engine
       - setup_remote_docker
       - run:
           name: Get Database Instance Endpoint annd save in a vaiable
