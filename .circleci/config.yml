@@ -196,21 +196,8 @@ jobs:
       - image: cimg/python:3.10
     steps:
       - checkout
-      - install_awscli
       - install_docker_compose_cli
       - setup_remote_docker
-      # - run:
-      #     name: Get Database Instance Endpoint annd save in a vaiable
-      #     command: |
-      #       export DB_ENDPOINT=$(aws rds describe-db-instances \
-      #       --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
-      #       --query 'DBInstances[*].Endpoint.Address' \
-      #       --output text)
-
-      #       echo ${DB_ENDPOINT} > .env
-      #       echo ${DB_ENDPOINT}
-      #       cat .env
-
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
@@ -219,9 +206,8 @@ jobs:
       - run:
           name: Push to Docker Hub
           command: |
-            sudo mv ~/.docker/config.json ~/.docker/config_old.json
             echo "$DOCKER_PASSWORD"
-            docker login -u $DOCKER_USERNAME --password-stdin
+            docker login -u $DOCKER_USERNAME -p ${DOCKER_PASSWORD}
             docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
             docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
 
