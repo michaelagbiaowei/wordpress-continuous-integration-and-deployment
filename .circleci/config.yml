@@ -25,19 +25,6 @@ commands:
             unzip awscliv2.zip
             sudo ./aws/install
 
-# install_docker_engine:
-#     description: Install AWS CLI v2
-#     steps:
-#       - run:
-#           name: Install Docker Compose
-#           environment:
-#             COMPOSE_VERSION: '2.19.0'
-#           command: |
-#             curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
-#             chmod +x ~/docker-compose
-#             sudo mv ~/docker-compose /usr/local/bin/docker-compose
-
-
   install_docker_compose_cli:
     description: Install AWS CLI v2
     steps:
@@ -211,33 +198,31 @@ jobs:
       - checkout
       - install_awscli
       - install_docker_compose_cli
-      # - install_docker_engine
       - setup_remote_docker
-      - run:
-          name: Get Database Instance Endpoint annd save in a vaiable
-          command: |
-            export DB_ENDPOINT=$(aws rds describe-db-instances \
-            --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
-            --query 'DBInstances[*].Endpoint.Address' \
-            --output text)
+      # - run:
+      #     name: Get Database Instance Endpoint annd save in a vaiable
+      #     command: |
+      #       export DB_ENDPOINT=$(aws rds describe-db-instances \
+      #       --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
+      #       --query 'DBInstances[*].Endpoint.Address' \
+      #       --output text)
 
-            echo ${DB_ENDPOINT} > .env
-            echo ${DB_ENDPOINT}
-            cat .env
+      #       echo ${DB_ENDPOINT} > .env
+      #       echo ${DB_ENDPOINT}
+      #       cat .env
 
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
-            docker-compose up -d --env-file .env
-            # docker inspect -f "{{.Name}} {{.Config.Env}}" wordpress
+            docker-compose up -d 
 
-      # - run:
-      #     name: Push to Docker Hub
-      #     command: |
-      #       echo "$DOCKER_PASSWORD"
-      #       docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      #       docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
-      #       docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
+      - run:
+          name: Push to Docker Hub
+          command: |
+            echo "$DOCKER_PASSWORD"
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
+            docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
 
       - persist_to_workspace:
           root: ~/
