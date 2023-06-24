@@ -203,7 +203,7 @@ jobs:
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
-            docker-compose build
+            docker-compose up build
             
             echo ${DB_ENDPOINT}
             cat .env
@@ -251,16 +251,16 @@ workflows:
   wordpress-workflow:
     jobs:
       # - syntax_validation
-      - deploy_vpc_stack
+      # - deploy_vpc_stack:
           # requires: [syntax_validation]
-      - deploy_rds_stack:
-          requires: [deploy_vpc_stack]
-      - get_rds_endpoint:
-          requires: [deploy_rds_stack]
+      # - deploy_rds_stack:
+      #     requires: [deploy_vpc_stack]
+      # - get_rds_endpoint:
+      #     requires: [deploy_rds_stack]
       # - deploy_eks_stack:
       #     requires: [deploy_vpc_stack]
-      - build_app:
-          requires: [get_rds_endpoint]
+      - build_app
+      #     requires: [get_rds_endpoint]
         # - deploy_app:
         #     requires: [build_app]
 
