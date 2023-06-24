@@ -272,7 +272,7 @@ workflows:
       #       # Setting the Docker Compose project name to "circleci-demo-docker" means
       #       # the names of our services' containers would be prefixed with "circleci-demo-docker".
       #       docker-compose --project circleci-demo-docker up -d
-
+#
       #       # In this example, we have a "contacts" service, and
       #       # we are trying to check, via `dockerize`, if the service is ready.
       #       docker container run --network container:circleci-demo-docker_contacts_1 \
