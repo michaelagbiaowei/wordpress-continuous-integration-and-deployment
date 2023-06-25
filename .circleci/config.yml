@@ -30,7 +30,7 @@ commands:
       - run:
           name: Install Docker Compose
           environment:
-            COMPOSE_VERSION: '2.19.0'
+            COMPOSE_VERSION: '1.29.2'
           command: |
             curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
             chmod +x ~/docker-compose
@@ -203,19 +203,25 @@ jobs:
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
-            export DB_ENDPOINT=$(aws rds describe-db-instances \
-            --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
-            --query 'DBInstances[*].Endpoint.Address' \
-            --output text)
+            # export DB_ENDPOINT=$(aws rds describe-db-instances \
+            # --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
+            # --query 'DBInstances[*].Endpoint.Address' \
+            # --output text)
 
+            DB_ENDPOINT=hostnameendpoint
             echo DB_HOST=${DB_ENDPOINT} > .env
             cat .env
 
       - run:
-          name: Build and Start all services declared in docker-compose.yml
+          name: Start docker-compose and verify service(s)
           command: |
-            docker-compose up -d
-            cat .env
+            docker-compose --project app up -d
+            docker container run --network container:app_contacts_1 \
+              docker.io/jwilder/dockerize \
+              -wait http://localhost:8080/healthcheck \
+              -wait-retry-interval 2s \
+              -timeout 20s
+
             
       - run:
           name: Push to Docker Hub
@@ -272,34 +278,3 @@ workflows:
       #     requires: [get_rds_endpoint]
         # - deploy_app:
         #     requires: [build_app]
-
-      # - run:
-      #     name: Start docker-compose and verify service(s)
-      #     command: |
-      #       # Setting the Docker Compose project name to "circleci-demo-docker" means
-      #       # the names of our services' containers would be prefixed with "circleci-demo-docker".
-      #       docker-compose --project circleci-demo-docker up -d
-#
-      #       # In this example, we have a "contacts" service, and
-      #       # we are trying to check, via `dockerize`, if the service is ready.
-      #       docker container run --network container:circleci-demo-docker_contacts_1 \
-      #         docker.io/jwilder/dockerize \
-      #         -wait http://localhost:8080/healthcheck \
-      #         -wait-retry-interval 2s \
-      #         -timeout 20s
-
-# version: 2.1
-
-# jobs:
-#   build:
-#     docker:
-#       - image: cimg/base:2023.06
-#     steps:
-#       - run:
-#           name: Update PATH and Define Environment Variable at Runtime
-#           # Add source command to execute code and make variables
-#           # available in current step.
-#           command: |
-#             echo 'export PATH=/path/to/foo/bin:"$PATH"' >> "$BASH_ENV"
-#             echo 'export VERY_IMPORTANT=$(cat important_value)' >> "$BASH_ENV"
-#             source "$BASH_ENV"
