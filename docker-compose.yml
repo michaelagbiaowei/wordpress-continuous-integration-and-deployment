@@ -6,11 +6,9 @@ services:
     restart: unless-stopped
     ports:
       - 8080:80
+    env_file: .env
     environment:
-    #   WORDPRESS_DB_HOST: $(aws rds describe-db-instances \
-    #         --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
-    #         --query 'DBInstances[*].Endpoint.Address' \
-    #         --output text)
+      WORDPRESS_DB_HOST: ${DB_ENDPOINT}
       WORDPRESS_DB_USER: ${DB_USERNAME}
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
       WORDPRESS_DB_NAME: ${DB_DATABASE}

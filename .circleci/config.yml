@@ -160,7 +160,6 @@ jobs:
             --output text)
 
             echo ${DB_ENDPOINT} > .env
-            echo ${DB_ENDPOINT}
             cat .env
 
       - persist_to_workspace:
@@ -205,20 +204,21 @@ jobs:
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
-            export DB_ENDPOINT=$(aws rds describe-db-instances \
-            --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
-            --query 'DBInstances[*].Endpoint.Address' \
-            --output text)
+            # export DB_ENDPOINT=$(aws rds describe-db-instances \
+            # --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
+            # --query 'DBInstances[*].Endpoint.Address' \
+            # --output text)
 
-            echo ${DB_ENDPOINT}
+            # echo ${DB_ENDPOINT}
+            DB_ENDPOINT=hostname
+            echo ${DB_ENDPOINT} > .env
+            cat .env
 
       - run:
           name: Build and Start all services declared in docker-compose.yml
-          environment:
-            WORDPRESS_DB_HOST: ${env.DB_ENDPOINT}
           command: |
             docker-compose up -d
-            echo ${WORDPRESS_DB_HOST}
+            cat .env
             
       # - run:
       #     name: Push to Docker Hub
@@ -290,3 +290,19 @@ workflows:
       #         -wait http://localhost:8080/healthcheck \
       #         -wait-retry-interval 2s \
       #         -timeout 20s
+
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/base:2023.06
+    steps:
+      - run:
+          name: Update PATH and Define Environment Variable at Runtime
+          # Add source command to execute code and make variables
+          # available in current step.
+          command: |
+            echo 'export PATH=/path/to/foo/bin:"$PATH"' >> "$BASH_ENV"
+            echo 'export VERY_IMPORTANT=$(cat important_value)' >> "$BASH_ENV"
+            source "$BASH_ENV"
