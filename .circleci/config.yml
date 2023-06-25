@@ -1,4 +1,3 @@
-#pip
 version: 2.1
 
 orbs:
@@ -291,18 +290,18 @@ workflows:
       #         -wait-retry-interval 2s \
       #         -timeout 20s
 
-version: 2.1
+# version: 2.1
 
-jobs:
-  build:
-    docker:
-      - image: cimg/base:2023.06
-    steps:
-      - run:
-          name: Update PATH and Define Environment Variable at Runtime
-          # Add source command to execute code and make variables
-          # available in current step.
-          command: |
-            echo 'export PATH=/path/to/foo/bin:"$PATH"' >> "$BASH_ENV"
-            echo 'export VERY_IMPORTANT=$(cat important_value)' >> "$BASH_ENV"
-            source "$BASH_ENV"
+# jobs:
+#   build:
+#     docker:
+#       - image: cimg/base:2023.06
+#     steps:
+#       - run:
+#           name: Update PATH and Define Environment Variable at Runtime
+#           # Add source command to execute code and make variables
+#           # available in current step.
+#           command: |
+#             echo 'export PATH=/path/to/foo/bin:"$PATH"' >> "$BASH_ENV"
+#             echo 'export VERY_IMPORTANT=$(cat important_value)' >> "$BASH_ENV"
+#             source "$BASH_ENV"
