@@ -25,15 +25,25 @@ commands:
             sudo ./aws/install
 
   install_docker_compose_cli:
-    description: Install AWS CLI v2
+    description: Install Docker Compose CLI
     steps:
-     - run:
-          name: Install Docker Compose CLI plugin
+    #  - run:
+    #       name: Install Docker Compose CLI plugin
+    #       command: |
+    #         DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+    #         sudo mkdir -p $DOCKER_CONFIG/cli-plugins
+    #         sudo curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+    #         sudo chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+
+        - run:
+          name: Install Docker Compose
+          environment:
+            COMPOSE_VERSION: '1.29.2'
           command: |
-            DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
-            sudo mkdir -p $DOCKER_CONFIG/cli-plugins
-            sudo curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
-            sudo chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+            curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+
 
 
 # DESTROY ENVIRONMENTS
@@ -199,7 +209,6 @@ jobs:
       - setup_remote_docker
       - attach_workspace:
           at: ~/
-    # environment:
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
