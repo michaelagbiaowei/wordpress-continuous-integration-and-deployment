@@ -203,19 +203,18 @@ jobs:
       - run:
           name: Build and Start all services declared in docker-compose.yml
           command: |
-            # export DB_ENDPOINT=$(aws rds describe-db-instances \
-            # --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
-            # --query 'DBInstances[*].Endpoint.Address' \
-            # --output text)
+            export DB_ENDPOINT=$(aws rds describe-db-instances \
+            --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
+            --query 'DBInstances[*].Endpoint.Address' \
+            --output text)
 
-            DB_ENDPOINT=hostnameendpoint
             echo DB_HOST=${DB_ENDPOINT} > .env
             cat .env
 
       - run:
           name: Start docker-compose and verify service(s)
           command: |
-            docker-compose --project app up -d
+            docker compose  --project-name app up -d
             docker container run --network container:app_contacts_1 \
               docker.io/jwilder/dockerize \
               -wait http://localhost:8080/healthcheck \
