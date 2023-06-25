@@ -201,17 +201,6 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: Build and Start all services declared in docker-compose.yml
-          command: |
-            export DB_ENDPOINT=$(aws rds describe-db-instances \
-            --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
-            --query 'DBInstances[*].Endpoint.Address' \
-            --output text)
-
-            echo DB_HOST=${DB_ENDPOINT} > .env
-            cat .env
-
-      - run:
           name: Start docker-compose and verify service(s)
           command: |
             docker compose  --project-name app up -d
@@ -221,59 +210,109 @@ jobs:
               -wait-retry-interval 2s \
               -timeout 20s
 
-            
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.env
+
+# TEST APPLICATION
+  test-app:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - install_docker_compose_cli
+      - install_awscli
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/
+      - run :
+          name: Vrify if your app is reachable using http
+          command: |
+            PORT=3306
+            RETRY_COUNT=0
+
+            while true; do
+                curl http://localhost:$PORT
+                if [ $? -eq 0 ]; then
+                    echo "App is reachable"
+                    break
+                else
+                    RETRY_COUNT=$((RETRY_COUNT+1))
+                    if [ $RETRY_COUNT -eq 3 ]; then
+                        echo "App is not reachable after $RETRY_COUNT retries. Exiting with error."
+                        exit 1
+                    else
+                        echo "App is not reachable. Waiting 5 seconds before trying again..."
+                        sleep 5
+                    fi
+                fi
+            done
+
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.env
+
+# PUSH APPLICATION TO DOCKER REGISTRY
+  push-app:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - install_docker_compose_cli
+      - install_awscli
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/
       - run:
           name: Push to Docker Hub
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
             docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
             docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
-
-
            
-#       - notify_on_failure
+      # - notify_on_failure
 
-#   # DEPLOY APPLICATION
-#   deploy_app:
-#     docker:
-#       - image: cimg/python:3.10
-#     steps:
-#       - checkout
-#       - install_awscli
-      # - attach_workspace:
-      #     at: ~/
-#       - run:
-#           name: Install kubectl
-#           command: |
-#             curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-#             chmod +x ./kubectl
-#             sudo mv ./kubectl /usr/local/bin/kubectl
-#             aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
-#             kubectl apply -f operations/wordpress/
+# DEPLOY APPLICATION
+  deploy_app:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - install_awscli
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install kubectl
+          command: |
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
+            aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+            kubectl apply -f operations/wordpress/
 
-#             kubectl get deployments -w
+            kubectl get deployments -w
 
-#       - notify_on_failure
-
-
-
-
-
-
+      # - notify_on_failure
 
 workflows:
   wordpress-workflow:
     jobs:
       # - syntax_validation
       # - deploy_vpc_stack:
-          # requires: [syntax_validation]
+      #     requires: [syntax_validation]
       # - deploy_rds_stack:
       #     requires: [deploy_vpc_stack]
       # - get_rds_endpoint:
       #     requires: [deploy_rds_stack]
       # - deploy_eks_stack:
       #     requires: [deploy_vpc_stack]
-      - build_app
+      # - build_app:
       #     requires: [get_rds_endpoint]
-        # - deploy_app:
-        #     requires: [build_app]
+      # - test_app:
+      #     requires: [build_app]
+      # - push_app:
+      #     requires: [test_app]      
+      # - deploy_app:
+      #     requires: [push_app]
