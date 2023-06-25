@@ -207,9 +207,10 @@ jobs:
             # --db-instance-identifier ${DB_INSTANCE_IDENTIFIER} \
             # --query 'DBInstances[*].Endpoint.Address' \
             # --output text)
-
-            # echo ${DB_ENDPOINT}
-            echo TDB_ENDPOINT=hostname > .env
+            
+            export DB_ENDPOINT=hostname
+            
+            echo DB_HOST=${DB_ENDPOINT} > .env
             cat .env
 
       - run:
