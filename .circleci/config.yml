@@ -215,7 +215,7 @@ jobs:
           name: Start docker-compose and verify service(s)
           command: |
             docker compose  --project-name app up -d
-            docker container run --network container:app_contacts_1 \
+            docker container run --network container:app_wordpress_1 \
               docker.io/jwilder/dockerize \
               -wait http://localhost:8080/healthcheck \
               -wait-retry-interval 2s \
