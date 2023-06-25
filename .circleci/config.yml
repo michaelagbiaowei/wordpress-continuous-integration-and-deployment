@@ -209,7 +209,7 @@ jobs:
             # --output text)
 
             # echo ${DB_ENDPOINT}
-            echo DB_ENDPOINT=hostname > .env
+            echo TDB_ENDPOINT=hostname > .env
             cat .env
 
       - run:
