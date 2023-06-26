@@ -138,6 +138,7 @@ jobs:
               --stack-name "wordpress-rds-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides \
+                DBInstanceIdentifier=${DB_INSTANCE_IDENTIFIER} \
                 DBName=${DB_NAME} \
                 MasterUsername=${DB_USERNAME} \
                 MasterUserPassword=${DB_PASSWORD}
