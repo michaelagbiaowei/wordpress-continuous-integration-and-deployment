@@ -136,8 +136,11 @@ jobs:
               --template-file iac/cloudformation/rds-stack.yml \
               --tags project=wordpress-project \
               --stack-name "wordpress-rds-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides file://iac/cloudformation/rds-parameters.json \
-              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
+              --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
+              --parameter-overrides \
+                DBName=${DB_NAME} \
+                MasterUsername=${DB_USERNAME} \
+                MasterUserPassword=${DB_PASSWORD}
 
       # - notify_on_failure
       - destroy_rds_stack_environment

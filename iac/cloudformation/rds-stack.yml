@@ -6,9 +6,19 @@ Parameters:
     Description: Enter the Name of the owner for this Stack.
     Type: String
     Default: Michael Agbiaowei
+  # VPC:
+  #   Description: Select VPC form the available VPCs in your account.
+  #   Type: AWS::EC2::VPC::Id
+  # PrivateSubnet1:
+  #   Description: Select Private Subnet 1.
+  #   Type: AWS::EC2::Subnet::Id
+  # PrivateSubnet2:
+  #   Description: Select Private Subnet 2.
+  #   Type: AWS::EC2::Subnet::Id
   EnvironmentName:
     Description: An environment name that will be prefixed to resource names
     Type: String
+    Default: WordPressProject
   DBInstanceIdentifier:
     Description: Type a name for your DB instance.First character must be a letter.1-60 alphanumeric characters.
     Type: String
@@ -16,7 +26,7 @@ Parameters:
   DBName:
     Description: Database Name
     Type: String
-    Default: {{ env.DB_NAME }}
+    Default: wordpressdb12345
     MinLength: '4'
     MaxLength: '64'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
@@ -24,7 +34,7 @@ Parameters:
   MasterUsername:
     Description: Database administration name.
     Type: String
-    Default: {{ env.DB_USER }}
+    Default: wordpressuser
     MinLength: '1'
     MaxLength: '16'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
@@ -33,10 +43,13 @@ Parameters:
     NoEcho: 'true'
     Description: Database administration password.
     Type: String
-    Default: {{ env.DB_PASSWORD }}
+    Default: wordpressPASSWORD12345
     MinLength: '8'
     AllowedPattern: "[a-zA-Z0-9!?]*"
     ConstraintDescription: Must only contain upper and lowercase letters and numbers
+  # KmsKeyId:
+  #   Description: The ARN of the AWS KMS key that's used to encrypt the DB instance
+  #   Type: String
   BackupRetentionPeriod:
     Description: Enter Backup Retention Period in Days.
     Type: Number
@@ -104,6 +117,12 @@ Metadata:
         default: Ownership
       Parameters:
       - Owner
+    # - Label:
+    #     default: Network Configuration
+    #   Parameters:
+      # - VPC
+      # - PrivateSubnet1
+      # - PrivateSubnet2
     - Label:
         default: RDS Configuration
       Parameters:
@@ -123,10 +142,16 @@ Metadata:
         default: Team or Individual Owner
       InstanceType:
         default: Instance Type
+      # PrivateSubnet1:
+      #   default: Private Subnet 1
+      # PrivateSubnet2:
+      #   default: Private Subnet 2
       MasterUsername:
         default: Master Username
       MasterUserPassword:
         default: Master User Password
+      # KmsKeyId:
+      #   default: The ARN of the AWS KMS key that's used to encrypt the DB instance
       BackupRetentionPeriod:
         default: Backup Retention Period
       PreferredBackupWindow:
@@ -229,6 +254,8 @@ Resources:
         Ref: MasterUsername
       MasterUserPassword:
         Ref: MasterUserPassword  
+      # KmsKeyId:
+      #   Ref: KmsKeyId
       MultiAZ:
         Ref: MultiAvailabilityZone
       Port:
@@ -255,6 +282,10 @@ Outputs:
     Description: Team or Individual that Owns this Formation.
     Value:
       Ref: Owner
+  # VPC:
+  #   Description: VPC Used
+  #   Value:
+  #     Ref: VPC
   RDSHostname:
     Description: RDS Hostname
     Value:
@@ -279,6 +310,14 @@ Outputs:
     Description: RDS Access Security Group Created.
     Value:
       Ref: RDSAccessSecurityGroup
+  # PrivateSubnet1:
+  #   Description: Private Subnet 1 Deployment
+  #   Value:
+  #     Ref: PrivateSubnet1
+  # PrivateSubnet2:
+  #   Description: Private Subnet 2 Deployment
+  #   Value:
+  #     Ref: PrivateSubnet2
   BackupRetentionPeriod:
     Description: Backup Retention Period in Days
     Value:
