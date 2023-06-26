@@ -212,7 +212,7 @@ jobs:
             - project/.env
 
 # TEST APPLICATION
-  test-app:
+  test_app:
     docker:
       - image: cimg/python:3.10
     steps:
@@ -251,7 +251,7 @@ jobs:
             - project/.env
 
 # PUSH APPLICATION TO DOCKER REGISTRY
-  push-app:
+  push_app:
     docker:
       - image: cimg/python:3.10
     steps:
