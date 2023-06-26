@@ -295,20 +295,20 @@ jobs:
 workflows:
   wordpress-workflow:
     jobs:
-      - syntax_validation
-      - deploy_vpc_stack:
-          requires: [syntax_validation]
-      - deploy_rds_stack:
-          requires: [deploy_vpc_stack]
-      - get_rds_endpoint:
-          requires: [deploy_rds_stack]
-      - deploy_eks_stack:
-          requires: [deploy_vpc_stack]
-      - build_app:
-          requires: [get_rds_endpoint]
-      - test_app:
-          requires: [build_app]
-      - push_app:
-          requires: [test_app]      
-      # - deploy_app:
+      # - syntax_validation
+      # - deploy_vpc_stack:
+      #     requires: [syntax_validation]
+      # - deploy_rds_stack:
+      #     requires: [deploy_vpc_stack]
+      # - get_rds_endpoint:
+      #     requires: [deploy_rds_stack]
+      # - deploy_eks_stack:
+      #     requires: [deploy_vpc_stack]
+      # - build_app:
+      #     requires: [get_rds_endpoint]
+      # - test_app:
+      #     requires: [build_app]
+      # - push_app:
+      #     requires: [test_app, deploy_eks_stack]      
+      # # - deploy_app:
       #     requires: [push_app]
