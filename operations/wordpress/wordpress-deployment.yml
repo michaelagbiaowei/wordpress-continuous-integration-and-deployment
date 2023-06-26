@@ -21,13 +21,13 @@ spec:
         image: maiempire/wordpress:latest
         env:
         - name: WORDPRESS_DB_HOST
-          value: ${DB_HOST}
+          value: {{ .Values.env.DB_HOST }}
         - name: WORDPRESS_DB_PASSWORD
-          VALUE: ${DB_PASSWORD}
+          value: {{ .Values.env.DB_PASSWORD }}
         - name: WORDPRESS_DB_NAME
-          value: ${DB_NAME}
-        - name: WORDPRES_DB_USERNAME
-          value: ${DB_USERNAME}
+          value: {{ .Values.env.DB_DATABASE }}
+        - name: WORDPRES_DB_USER
+          value: {{ .Values.env.DB_USERNAME }}
         resources:
           limits:
             memory: "128Mi"
