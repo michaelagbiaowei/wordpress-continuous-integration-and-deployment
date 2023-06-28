@@ -264,8 +264,8 @@ Resources:
         Ref: PreferredBackupWindow
       PreferredMaintenanceWindow:
         Ref: PreferredMaintenanceWindow
-      PubliclyAccessible: 'false'
-      StorageEncrypted: 'True'
+      PubliclyAccessible: 'True'
+      StorageEncrypted: 'True' 
       StorageType: gp2
       VPCSecurityGroups:
       - Ref: RDSAccessSecurityGroup

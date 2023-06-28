@@ -111,6 +111,7 @@ jobs:
       - checkout
       - run:
           name: Provision network infrastructure
+          no_output_timeout: 30m
           command: |
             aws cloudformation deploy \
               --template-file iac/cloudformation/vpc-stack.yml \
@@ -119,7 +120,7 @@ jobs:
               --parameter-overrides file://iac/cloudformation/vpc-parameters.json \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
-      # - notify_on_failure
+      - notify_on_failure
       - destroy_vpc_stack_environment
 
   deploy_rds_stack:
@@ -138,11 +139,11 @@ jobs:
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" \
               --parameter-overrides \
                 DBInstanceIdentifier=${DB_INSTANCE_IDENTIFIER} \
-                DBName=${DB_NAME} \
+                DBName=${DB_DATABASE} \
                 MasterUsername=${DB_USERNAME} \
                 MasterUserPassword=${DB_PASSWORD}
 
-      # - notify_on_failure
+      - notify_on_failure
       - destroy_rds_stack_environment
 
   get_rds_endpoint:
@@ -170,7 +171,7 @@ jobs:
           paths:
             - project/.env
 
-      # - notify_on_failure
+      - notify_on_failure
       - destroy_rds_stack_environment
 
   deploy_eks_stack:
@@ -189,7 +190,7 @@ jobs:
               --parameter-overrides file://iac/cloudformation/eks-parameters.json \
               --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM"
 
-#       - notify_on_failure
+      - notify_on_failure
       - destroy_eks_stack_environment
 
 # BUILD APPLICATION
@@ -271,7 +272,7 @@ jobs:
             docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
             docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
            
-      # - notify_on_failure
+      - notify_on_failure
 
 # DEPLOY APPLICATION
   deploy_app:
@@ -293,7 +294,7 @@ jobs:
 
             kubectl get deployments -w
 
-      # - notify_on_failure
+      - notify_on_failure
 
 workflows:
   wordpress-workflow:
