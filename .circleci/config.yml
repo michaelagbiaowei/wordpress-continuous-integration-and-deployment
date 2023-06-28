@@ -36,6 +36,16 @@ commands:
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
 
+  install_kubectl:
+    description: Install kubectl and deloy to AWS EKS
+    steps:
+      - run:
+          name: Install kubectl and deloy to AWS EKS
+          command: |
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
+
 
 # DESTROY ENVIRONMENTS
   destroy_vpc_stack_environment:
@@ -281,20 +291,140 @@ jobs:
     steps:
       - checkout
       - install_awscli
+      - install_kubectl
       - attach_workspace:
           at: ~/
       - run:
-          name: Install kubectl and deloy to AWS EKS
+          name: Deloy to AWS EKS
           command: |
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            chmod +x ./kubectl
-            sudo mv ./kubectl /usr/local/bin/kubectl
             aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
             kubectl apply -f operations/wordpress/
 
-            kubectl get deployments -w
+      - notify_on_failure
+
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.env
+
+# APPLICATION HEALTH CHECKS
+  check_health_status:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - install_awscli
+      - install_kubectl
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Check Health Status of WordPress Deployment
+          command: |
+            # Function to check if the deployment is healthy
+            check_health() {
+                local deployment="$1"
+                local attempts=0
+                local max_attempts=30
+
+                # Wait for 30 seconds with 1-second intervals to check deployment health
+                while [[ $attempts -lt $max_attempts ]]; do
+                    local health_status=$(kubectl get deployment "$deployment" -o jsonpath='{.status.conditions[?(@.type=="Available")].status}')
+                    if [[ "$health_status" == "True" ]]; then
+                        echo "Deployment $deployment is healthy."
+                        return 0
+                    fi
+                    sleep 1
+                    attempts=$((attempts + 1))
+                done
+
+                # Deployment is still not healthy after 30 seconds, fail the process
+                echo "Deployment $deployment is not healthy after 30 seconds. Process failed."
+                exit 1
+            }
+
+            # Watch deployments and break if not healthy
+            watch_deployments() {
+                while true; do
+                    kubectl get deployments -w | while read -r line; do
+                        # Check if the line contains the deployment name
+                        if [[ "$line" == *"wordpress-deployment"* ]]; then
+                            echo "$line"
+                            check_health "wordpress-deployment"
+                        fi
+                    done
+                done
+            }
+
+            # Start watching deployments
+            watch_deployments
 
       - notify_on_failure
+
+# APPLICATION SMOKE TEST
+  smoke_test:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - install_awscli
+      - install_kubectl
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Application Smoke Test
+          command: |
+            set -e
+
+            url="${URL}"
+
+            echo "Performing smoke test for WordPress app..."
+
+            response=$(curl -s -o /dev/null -w "%{http_code}" $url)
+
+            if [ $response -eq 200 ]; then
+              echo "Smoke test passed!"
+            else
+              echo "Smoke test failed!"
+              exit 1
+            fi
+
+# APPLICATION DEPENDENCY VULNERABILITY TEST
+  vulnerability_test:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - install_awscli
+      - install_kubectl
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Application Dependency Vulnerability Test
+          command: |
+            set -e
+
+            url="${URL}"
+
+            echo "Enter the URL of the WordPress site you want to scan:"
+            # read url
+
+            echo "Scanning $url for vulnerabilities..."
+
+            if ! wpscan --url $url --enumerate vp --plugins-detection mixed --no-color; then
+              echo "Scan failed!"
+              exit 1
+            fi
+
+            echo "Scan completed successfully!"
+
+  notify_on_success:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - slack/notify:
+          event: pass
+          channel: cicd-pipeline
+          template: success_tagged_deployment_1
 
 workflows:
   wordpress-workflow:
@@ -314,5 +444,13 @@ workflows:
       #     requires: [build_app]
       # - push_app:
       #     requires: [test_app, deploy_eks_stack]      
-      # # - deploy_app:
+      # - deploy_app:
       #     requires: [push_app]
+      # - check_health_status:
+      #     requires: [deploy_app]
+      # - smoke_test:
+      #     requires: [check_health_status]
+      # - vulnerability_test:
+      #     requires: [smoke_test]
+      # - notify_on_success:
+      #     requires: [vulnerability_test]
