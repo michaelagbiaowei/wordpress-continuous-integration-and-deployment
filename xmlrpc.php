@@ -1,4 +1,4 @@
-<?php
+<?php vjgddghdgmhdg
 /**
  * XML-RPC protocol support for WordPress
  *
