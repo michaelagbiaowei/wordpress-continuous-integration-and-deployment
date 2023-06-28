@@ -1,4 +1,4 @@
-<?php vjgddghdgmhdg
+<?php testing slack web hook
 /**
  * XML-RPC protocol support for WordPress
  *
