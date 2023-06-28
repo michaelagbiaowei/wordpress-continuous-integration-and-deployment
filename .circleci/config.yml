@@ -428,7 +428,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: Deploy latest version of Application to AWS EKS CLUSTER
+          name: Delete old version of Application from AWS EKS CLUSTER
           command: |
             kubectl delete deployment ${BLUE_APP}
           
