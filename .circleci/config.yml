@@ -417,6 +417,21 @@ jobs:
 
             echo "Scan completed successfully!"
 
+# BLUE-GREEN DEPLOYMENT
+  clean_up:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - install_awscli
+      - install_kubectl
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Deploy latest version of Application to AWS EKS CLUSTER
+          command: |
+            kubectl delete deployment ${BLUE_APP}
+          
   notify_on_success:
     docker:
       - image: cimg/base:stable
@@ -452,5 +467,7 @@ workflows:
       #     requires: [check_health_status]
       # - vulnerability_test:
       #     requires: [smoke_test]
-      # - notify_on_success:
+      # - clean_up: 
       #     requires: [vulnerability_test]
+      # - notify_on_success:
+      #     requires: [clean_up]
