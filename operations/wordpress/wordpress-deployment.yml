@@ -29,7 +29,7 @@ spec:
         # - name: WORDPRES_DB_USER
         #   value: {{ .Values.env.DB_USERNAME }}
         - name: WORDPRESS_DB_HOST
-          value: mysql-service
+          value: database-1.c4v46hctkald.us-east-1.rds.amazonaws.com
         - name: WORDPRESS_DB_PASSWORD
           value: Ifiekemi1990
         - name: WORDPRESS_DB_NAME
