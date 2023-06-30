@@ -11,4 +11,4 @@ spec:
   - port: 3306
     targetPort: 3306
   type: ExternalName
-  externalName: database-1.c4v46hctkald.us-east-1.rds.amazonaws.com
+  externalName: ${DB_HOST}
