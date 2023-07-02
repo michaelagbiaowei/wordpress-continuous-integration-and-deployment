@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: wordpress-config
   labels:
-    app: postgres
+    app: wordpress
 data:
   WORDPRESS_DB_HOST: "database-1.c4v46hctkald.us-east-1.rds.amazonaws.com"
   WORDPRESS_DB_USER: "admin"
