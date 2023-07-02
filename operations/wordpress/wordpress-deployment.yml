@@ -54,9 +54,9 @@ spec:
           value: database-1.c4v46hctkald.us-east-1.rds.amazonaws.com
         - name: WORDPRESS_DB_PASSWORD
           value: xLeqcHzdapQvnyYvdJlw
-        - name: WORDPRESS_DB_NAME
-          value: wordpressdb
-        - name: WORDPRES_DB_USER
+        # - name: WORDPRESS_DB_NAME
+        #   value: wordpressdb
+        # - name: WORDPRES_DB_USER
           value: admin
         resources:
           limits:
