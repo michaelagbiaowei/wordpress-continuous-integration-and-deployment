@@ -20,23 +20,26 @@ spec:
       - name: wordpress
         image: wordpress:latest
         env:
-        - name: WORDPRESS_DB_HOST
-          value: database-1.c4v46hctkald.us-east-1.rds.amazonaws.com
-        - name: WORDPRESS_DB_USER
-          valueFrom:
-            configMapKeyRef:
-              key: WORDPRESS_DB_USER
-              name: wordpress-config
-        - name: WORDPRESS_DB_PASSWORD
-          valueFrom:
-            configMapKeyRef:
-              key: WORDPRESS_DB_PASSWORD
-              name: wordpress-config
-        - name: WORDPRESS_DB_NAME
-          valueFrom:
-            configMapKeyRef:
-              key: WORDPRESS_DB_NAME
-              name: wordpress-config
+          - name: WORDPRESS_DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                key: WORDPRESS_DB_HOST
+                name: wordpress-config
+          - name: WORDPRESS_DB_USER
+            valueFrom:
+              configMapKeyRef:
+                key: WORDPRESS_DB_USER
+                name: wordpress-config
+          - name: WORDPRESS_DB_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: WORDPRESS_DB_PASSWORD
+                name: wordpress-config
+          - name: WORDPRESS_DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                key: WORDPRESS_DB_NAME
+                name: wordpress-config
 
         # - name: WORDPRESS_DB_HOST
         #   value: {{ .Values.env.DB_HOST }}
@@ -46,6 +49,7 @@ spec:
         #   value: {{ .Values.env.DB_DATABASE }}
         # - name: WORDPRES_DB_USER
         #   value: {{ .Values.env.DB_USERNAME }}
+        
         resources:
           limits:
             memory: "128Mi"
