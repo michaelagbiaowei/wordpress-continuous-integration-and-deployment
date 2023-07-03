@@ -10,3 +10,4 @@ data:
   WORDPRESS_DB_USER: "admin"
   WORDPRESS_DB_PASSWORD: "xLeqcHzdapQvnyYvdJlw"
   WORDPRESS_DB_NAME: "wordpress"
+
