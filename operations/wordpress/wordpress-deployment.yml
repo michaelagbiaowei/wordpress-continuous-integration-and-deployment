@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: wordpress
-        image: wordpress:latest
+        image: wordpress:6.2.2-apache
         env:
         - name: WORDPRESS_DB_HOST
           valueFrom:
