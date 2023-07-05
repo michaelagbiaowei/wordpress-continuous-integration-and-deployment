@@ -308,7 +308,6 @@ jobs:
       - run:
           name: Deloy to AWS EKS
           command: |
-            # aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME-${CIRCLE_WORKFLOW_ID:0:7}
             aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
             kubectl apply -f operations/mysql-rds/
             kubectl apply -f operations/wordpress/
