@@ -312,11 +312,6 @@ jobs:
             kubectl apply -f operations/mysql-rds/
             kubectl apply -f operations/wordpress/
 
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.env
-
       - notify_on_failure
 
 # APPLICATION HEALTH CHECKS
