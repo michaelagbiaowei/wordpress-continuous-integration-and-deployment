@@ -304,7 +304,7 @@ jobs:
     steps:
       - checkout
       - install_awscli
-      # - install_kubectl
+      - install_kubectl
       # - run:
       #     name: Create deployment manifest
       #     command: |
@@ -318,7 +318,7 @@ jobs:
       #           << parameters.version-info >>|g" > deployment/demo-app-deployment.yaml
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: $EKS_CLUSTER_NAME
-          install-kubectl: true
+          # install-kubectl: true
           aws-region: $AWS_DEFAULT_REGION 
       - kubernetes/create-or-update-resource:
           resource-file-path: "operations/mysql-rds/mysql-rds-service.yml"
