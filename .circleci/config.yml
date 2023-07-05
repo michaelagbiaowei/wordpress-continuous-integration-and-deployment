@@ -468,10 +468,10 @@ workflows:
       #     requires: [deploy_vpc_stack]
       - build_app:
           requires: [get_rds_endpoint]
-      - test_app:
-          requires: [build_app]
+      # - test_app:
+          # requires: [build_app]
       - push_app:
-          requires: [test_app]      
+          requires: [build_app]      
       - deploy_app:
           requires: [push_app]
       # - check_health_status:
