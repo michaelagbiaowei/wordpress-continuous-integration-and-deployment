@@ -12,16 +12,3 @@ data:
   WORDPRESS_DB_NAME: wordpressdb
 
 
-
-# ---
-# apiVersion: v1
-# kind: Secret
-# metadata:
-#   name: wordpress-secret
-# type: Opaque
-# data:
-#   WORDPRESS_DB_HOST: mysql-service
-#   WORDPRESS_DB_USER: "admin"
-#   WORDPRESS_DB_PASSWORD: "xLeqcHzdapQvnyYvdJlw"
-#   WORDPRESS_DB_NAME: "wordpress"
-
