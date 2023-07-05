@@ -1,8 +1,8 @@
 version: '3.8'
 services:
   wordpress:
-    image: wordpress:latest
-    container_name: wordpress
+    image: wordpress:${WORDPRESS_VERSION}
+    container_name: ${WORDPRESS_CONTAINER}
     restart: unless-stopped
     ports:
       - 8080:80
