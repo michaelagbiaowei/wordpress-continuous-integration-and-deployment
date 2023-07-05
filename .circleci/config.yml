@@ -468,18 +468,18 @@ workflows:
       #     requires: [syntax_validation]
       # - deploy_rds_stack:
       #     requires: [deploy_vpc_stack]
-      - get_rds_endpoint
+      # - get_rds_endpoint
       #     requires: [deploy_rds_stack]
       # - deploy_eks_stack:
       #     requires: [deploy_vpc_stack]
-      - build_app:
-          requires: [get_rds_endpoint]
+      # - build_app:
+      #     requires: [get_rds_endpoint]
       # - test_app:
           # requires: [build_app]
       # - push_app:
       #     requires: [build_app]      
-      - deploy_app:
-          requires: [build_app]
+      - deploy_app
+          # requires: [build_app]
       # - check_health_status:
       #     requires: [deploy_app]
       # - smoke_test:
