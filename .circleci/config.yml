@@ -300,9 +300,11 @@ jobs:
 # DEPLOY APPLICATION
   deploy_app:
     docker:
-      - image: aws-eks/python3
+      - image: cimg/python:3.10
     steps:
       - checkout
+      - install_awscli
+      - install_kubectl
       # - run:
       #     name: Create deployment manifest
       #     command: |
