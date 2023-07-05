@@ -307,7 +307,7 @@ jobs:
       - run:
           name: Deloy to AWS EKS
           command: |
-            aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
             kubectl apply -f operations/mysql-rds
             kubectl apply -f operations/wordpress/
 
