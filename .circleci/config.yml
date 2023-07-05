@@ -301,13 +301,16 @@ jobs:
     steps:
       - checkout
       - install_awscli
-      - install_kubectl
+      # - install_kubectl
       - attach_workspace:
           at: ~/
       - run:
           name: Deloy to AWS EKS
           command: |
-            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
+            aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
             kubectl apply -f operations/mysql-rds
             kubectl apply -f operations/wordpress/
 
