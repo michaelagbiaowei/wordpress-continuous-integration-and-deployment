@@ -15,7 +15,7 @@ docker login -u maiempire
 
 #Step 3:
 # Tag the images with your Docker ID
-docker tag $dockerpath:latest maiempire/$dockerpath
+docker tag $dockerpath:6.2.2-apache maiempire/$dockerpath
 
 # Step 4:
 # Push image to a docker repository
