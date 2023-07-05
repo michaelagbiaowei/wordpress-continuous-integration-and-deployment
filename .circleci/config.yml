@@ -283,7 +283,7 @@ jobs:
           name: Push to Docker Hub
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
-            docker tag $WORDPRESS_IMAGE:latest $DOCKER_USERNAME/$WORDPRESS_IMAGE
+            docker tag $WORDPRESS_IMAGE:6.2.2-apache $DOCKER_USERNAME/$WORDPRESS_IMAGE
             docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
            
       - notify_on_failure
@@ -302,6 +302,7 @@ jobs:
           name: Deloy to AWS EKS
           command: |
             aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+            kubectl apply -f operations/mysql-rds
             kubectl apply -f operations/wordpress/
 
       - notify_on_failure
@@ -457,22 +458,22 @@ workflows:
   wordpress-workflow:
     jobs:
       - syntax_validation
-      # - deploy_vpc_stack:
-      #     requires: [syntax_validation]
-      # - deploy_rds_stack:
-      #     requires: [deploy_vpc_stack]
-      # - get_rds_endpoint:
-      #     requires: [deploy_rds_stack]
-      # - deploy_eks_stack:
-      #     requires: [deploy_vpc_stack]
-      # - build_app:
-      #     requires: [get_rds_endpoint]
-      # - test_app:
-      #     requires: [build_app]
-      # - push_app:
-      #     requires: [test_app, deploy_eks_stack]      
-      # - deploy_app:
-      #     requires: [push_app]
+      - deploy_vpc_stack:
+          requires: [syntax_validation]
+      - deploy_rds_stack:
+          requires: [deploy_vpc_stack]
+      - get_rds_endpoint:
+          requires: [deploy_rds_stack]
+      - deploy_eks_stack:
+          requires: [deploy_vpc_stack]
+      - build_app:
+          requires: [get_rds_endpoint]
+      - test_app:
+          requires: [build_app]
+      - push_app:
+          requires: [test_app, deploy_eks_stack]      
+      - deploy_app:
+          requires: [push_app]
       # - check_health_status:
       #     requires: [deploy_app]
       # - smoke_test:
