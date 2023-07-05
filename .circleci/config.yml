@@ -2,12 +2,9 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.10.1
-  # aws-cli: circleci/aws-cli@3.1.4
-  # kubernetes: circleci/kubernetes@1.0.2
-  # aws-eks: circleci/aws-eks@0.2.0
+  aws-cli: circleci/aws-cli@3.1.4
+  kubernetes: circleci/kubernetes@1.0.2
   aws-eks: circleci/aws-eks@0.2.0
-  aws-ecr: circleci/aws-ecr@3.1.0
-  kubernetes: circleci/kubernetes@0.3.0
 
 commands:
   notify_on_failure:
@@ -300,54 +297,21 @@ jobs:
 
 # DEPLOY APPLICATION
   deploy_app:
-    # docker:
-    #   - image: cimg/python:3.10
-    executor: aws-eks/python3
+    docker:
+      - image: cimg/python:3.10
     steps:
       - checkout
       - install_awscli
-      # - install_kubectl
-      # - run:
-      #     name: Create deployment manifest
-      #     command: |
-      #       # Replace the placeholders in the manifest with the intended values.
-      #       # This is to avoid hardcoding the image name in the manifest, to make this
-      #       # demo project more portable.
-      #       BUILD_DATE=$(date '+%Y%m%d%H%M%S')
-      #       cat deployment/demo-app-deployment.yaml.template |\
-      #         sed "s|DOCKER_IMAGE_NAME|<< parameters.docker-image-name >>|\
-      #           g;s|BUILD_DATE_VALUE|$BUILD_DATE|g;s|VERSION_INFO_VALUE|\
-      #           << parameters.version-info >>|g" > deployment/demo-app-deployment.yaml
-      - aws-eks/update-kubeconfig-with-authenticator:
-          cluster-name: $EKS_CLUSTER_NAME
-          install-kubectl: true
-          aws-region: $AWS_DEFAULT_REGION 
-      - kubernetes/create-or-update-resource:
-          resource-file-path: "operations/mysql-rds/mysql-rds-service.yml"
-      - kubernetes/create-or-update-resource:
-          resource-file-path: "operations/wordpress/wordpress-config.yml"
-      - kubernetes/create-or-update-resource:
-          resource-file-path: "operations/wordpress/wordpress-service.yml"
-      - kubernetes/create-or-update-resource:
-          resource-file-path: "operations/wordpress/wordpress-pvc.yml"
-      - kubernetes/create-or-update-resource:
-          resource-file-path: "operations/wordpress/wordpress-deployment.yml"
-          get-rollout-status: true
-          resource-name: operations/wordpress/wordpress-deployment
-
-    # steps:
-    #   - checkout
-    #   - install_awscli
-    #   - install_kubectl
-    #   - attach_workspace:
-    #       at: ~/
-    #   - run:
-    #       name: Deloy to AWS EKS
-    #       command: |
-    #         # aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME-${CIRCLE_WORKFLOW_ID:0:7}
-    #         aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
-    #         kubectl apply -f operations/mysql-rds/
-    #         kubectl apply -f operations/wordpress/
+      - install_kubectl
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Deloy to AWS EKS
+          command: |
+            # aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME-${CIRCLE_WORKFLOW_ID:0:7}
+            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+            kubectl apply -f operations/mysql-rds/
+            kubectl apply -f operations/wordpress/
 
       - persist_to_workspace:
           root: ~/
