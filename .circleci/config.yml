@@ -220,33 +220,10 @@ jobs:
           command: |
             docker compose up -d
             docker ps
-      - run:
-          name: Push to Docker Hub
-          command: |
-            echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
-            docker tag $WORDPRESS_IMAGE:6.2.2-apache $DOCKER_USERNAME/$WORDPRESS_IMAGE
-            docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
-
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.env
-
-      - notify_on_failure
 
 # TEST APPLICATION
-  test_app:
-    docker:
-      - image: cimg/python:3.10
-    steps:
-      - checkout
-      - install_docker_compose_cli
-      - install_awscli
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/
       - run :
-          name: Vrify if app is reachable using http
+          name: Verify if app is reachable using http
           command: |
             PORT=8080
             RETRY_COUNT=0
@@ -267,32 +244,17 @@ jobs:
                     fi
                 fi
             done
-
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.env
-
-      - notify_on_failure
+            cat .env
 
 # PUSH APPLICATION TO DOCKER REGISTRY
-  push_app:
-    docker:
-      - image: cimg/python:3.10
-    steps:
-      - checkout
-      - install_docker_compose_cli
-      - install_awscli
-      - setup_remote_docker
-      - attach_workspace:
-          at: ~/
       - run:
           name: Push to Docker Hub
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
-            docker tag $WORDPRESS_IMAGE:6.2.2-apache $DOCKER_USERNAME/$WORDPRESS_IMAGE
-            docker push $DOCKER_USERNAME/$WORDPRESS_IMAGE
-           
+            docker tag "$WORDPRESS_IMAGE:${WORDPRESS_VERSION}" "$DOCKER_USERNAME/$WORDPRESS_IMAGE"
+            docker push "$DOCKER_USERNAME/$WORDPRESS_IMAGE"
+            cat .env
+
       - notify_on_failure
 
 # DEPLOY APPLICATION
@@ -311,7 +273,8 @@ jobs:
             aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
             kubectl apply -f operations/mysql-rds/
             kubectl apply -f operations/wordpress/
-
+            cat .env
+            
       - notify_on_failure
 
 # APPLICATION HEALTH CHECKS
@@ -328,6 +291,8 @@ jobs:
           name: Check Health Status of WordPress Deployment
           command: |
             # Function to check if the deployment is healthy
+            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+
             check_health() {
                 local deployment="$1"
                 local attempts=0
@@ -429,7 +394,7 @@ jobs:
       - notify_on_failure
 
 # BLUE-GREEN DEPLOYMENT
-  clean_up:
+  undeploy_older_version:
     docker:
       - image: cimg/python:3.10
     steps:
@@ -457,30 +422,18 @@ jobs:
 workflows:
   wordpress-workflow:
     jobs:
-      # - syntax_validation
-      # - deploy_vpc_stack:
-      #     requires: [syntax_validation]
-      # - deploy_rds_stack:
-      #     requires: [deploy_vpc_stack]
-      # - get_rds_endpoint
-      #     requires: [deploy_rds_stack]
-      # - deploy_eks_stack
-      #     requires: [deploy_vpc_stack]
-      # - build_app:
-      #     requires: [get_rds_endpoint]
-      # - test_app:
-          # requires: [build_app]
-      # - push_app:
-      #     requires: [build_app]      
-      - deploy_app
-          # requires: [deploy_eks_stack]
-      # - check_health_status:
-      #     requires: [deploy_app]
-      # - smoke_test:
-      #     requires: [check_health_status]
-      # - vulnerability_test:
-      #     requires: [smoke_test]
-      # - clean_up: 
-      #     requires: [vulnerability_test]
-      # - notify_on_success:
-      #     requires: [clean_up]
+      - syntax_validation
+      - deploy_vpc_stack:
+          requires: [syntax_validation]
+      - deploy_rds_stack:
+          requires: [deploy_vpc_stack]
+      - get_rds_endpoint:
+          requires: [deploy_rds_stack]
+      - deploy_eks_stack:
+          requires: [deploy_vpc_stack]
+      - build_app:
+          requires: [get_rds_endpoint]      
+      - deploy_app:
+          requires: [deploy_eks_stack, get_rds_endpoint]
+      - check_health_status:
+          requires: [deploy_app]
