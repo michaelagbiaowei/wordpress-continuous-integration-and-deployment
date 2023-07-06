@@ -292,7 +292,8 @@ jobs:
           name: Check Health Status of WordPress Deployment
           command: |
             # Function to check if the deployment is healthy
-            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+            # aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name wordpress-eks-stack-${CIRCLE_WORKFLOW_ID:0:7}-cluster
+            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name wordpressdbidentifier12345.c4v46hctkald.us-east-1.rds.amazonaws.com
 
             check_health() {
                 local deployment="$1"
