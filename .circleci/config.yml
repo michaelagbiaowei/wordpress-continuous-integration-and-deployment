@@ -293,7 +293,7 @@ jobs:
           command: |
             # Function to check if the deployment is healthy
             # aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name wordpress-eks-stack-${CIRCLE_WORKFLOW_ID:0:7}-cluster
-            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name wordpressdbidentifier12345.c4v46hctkald.us-east-1.rds.amazonaws.com
+            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name wordpress-eks-stack-3abcf72-cluster
 
             check_health() {
                 local deployment="$1"
@@ -440,10 +440,11 @@ workflows:
       # - check_health_status:
       #     requires: [deploy_app]
 
-      - get_rds_endpoint
-      - build_app:
-          requires: [get_rds_endpoint]      
-      - deploy_app:
-          requires: [build_app]
-      - check_health_status:
-          requires: [deploy_app]
+      # - get_rds_endpoint
+      # - build_app:
+      #     requires: [get_rds_endpoint]      
+      # - deploy_app:
+      #     requires: [build_app]
+      - check_health_status
+          # requires: [deploy_app]
+
