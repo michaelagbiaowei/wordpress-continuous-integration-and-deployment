@@ -274,7 +274,7 @@ jobs:
           name: Create mysql-rds service manifest
           command: 
             cat operations/mysql-rds/demo-mysql-rds-service.yml.template |\
-               sed "s|RDS_DB_HOST|$DB_HSOT|g" > operations/mysql-rds/mysql-rds-service.yml
+               sed "s|RDS_DB_HOST|$DB_HOST|g" > operations/mysql-rds/mysql-rds-service.yml
 
       - run:
           name: Create wordpress deployment manifest
