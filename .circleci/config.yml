@@ -273,7 +273,7 @@ jobs:
             aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name wordpress-eks-stack-${CIRCLE_WORKFLOW_ID:0:7}-cluster
             kubectl apply -f operations/mysql-rds/
             kubectl apply -f operations/wordpress/
-            cat .env
+            kubectl get deploymennts
             
       - notify_on_failure
 
@@ -423,17 +423,17 @@ workflows:
   wordpress-workflow:
     jobs:
       - syntax_validation
-      # - deploy_vpc_stack:
-      #     requires: [syntax_validation]
-      # - deploy_rds_stack:
-      #     requires: [deploy_vpc_stack]
-      # - get_rds_endpoint:
-      #     requires: [deploy_rds_stack]
-      # - deploy_eks_stack:
-      #     requires: [deploy_vpc_stack]
+      - deploy_vpc_stack:
+          requires: [syntax_validation]
+      - deploy_rds_stack:
+          requires: [deploy_vpc_stack]
+      - get_rds_endpoint:
+          requires: [deploy_rds_stack]
+      - deploy_eks_stack:
+          requires: [deploy_vpc_stack]
       # - build_app:
-      #     requires: [get_rds_endpoint]      
+          # requires: [get_rds_endpoint]      
       # - deploy_app:
-      #     requires: [deploy_eks_stack, build_app]
+          # requires: [deploy_eks_stack, build_app]
       # - check_health_status:
       #     requires: [deploy_app]
