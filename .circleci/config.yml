@@ -432,7 +432,7 @@ workflows:
       # - deploy_eks_stack:
       #     requires: [deploy_vpc_stack]
       # - build_app:
-          # requires: [get_rds_endpoint]      
+      #     requires: [get_rds_endpoint]      
       # - deploy_app:
           # requires: [deploy_eks_stack, build_app]
       # - check_health_status:
