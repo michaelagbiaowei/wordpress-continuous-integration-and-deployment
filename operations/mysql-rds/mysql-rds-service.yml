@@ -7,3 +7,6 @@ spec:
   externalName: wordpressdbidentifier12345.c4v46hctkald.us-east-1.rds.amazonaws.com
   ports:
   - port: 3306
+    protocol: TCP
+    targetPort: 3306
+  sessionAffinity: None

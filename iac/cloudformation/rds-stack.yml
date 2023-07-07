@@ -205,7 +205,7 @@ Resources:
       DBSubnetGroupDescription:
         Fn::Join:
         - ''
-        - - 'RDS Subnet Group for '
+        - - 'RDS Subnet Group for'
           - Ref: AWS::StackName
       SubnetIds:
         - Fn::ImportValue: !Sub "${EnvironmentName}-PRI1-SN"
