@@ -221,30 +221,30 @@ jobs:
             docker compose up -d
             docker ps
 
-# TEST APPLICATION
-      # - run :
-      #     name: Verify if app is reachable using http
-      #     command: |
-      #       PORT=8080
-      #       RETRY_COUNT=0
+# VERIFY AVALIABILITY
+      - run :
+          name: Verify if app is reachable using http
+          command: |
+            PORT=8080
+            RETRY_COUNT=0
 
-      #       while true; do
-      #           curl http://localhost:$PORT
-      #           if [ $? -eq 0 ]; then
-      #               echo "App is reachable"
-      #               break
-      #           else
-      #               RETRY_COUNT=$((RETRY_COUNT+1))
-      #               if [ $RETRY_COUNT -eq 3 ]; then
-      #                   echo "App is not reachable after $RETRY_COUNT retries. Exiting with error."
-      #                   exit 1
-      #               else
-      #                   echo "App is not reachable. Waiting 5 seconds before trying again..."
-      #                   sleep 5
-      #               fi
-      #           fi
-      #       done
-      #       cat .env
+            while true; do
+                curl http://localhost:$PORT
+                if [ $? -eq 0 ]; then
+                    echo "App is reachable"
+                    break
+                else
+                    RETRY_COUNT=$((RETRY_COUNT+1))
+                    if [ $RETRY_COUNT -eq 3 ]; then
+                        echo "App is not reachable after $RETRY_COUNT retries. Exiting with error."
+                        exit 1
+                    else
+                        echo "App is not reachable. Waiting 5 seconds before trying again..."
+                        sleep 5
+                    fi
+                fi
+            done
+            cat .env
 
 # PUSH APPLICATION TO DOCKER REGISTRY
       - run:
@@ -299,6 +299,36 @@ jobs:
             kubectl get deploymennts
             
       - notify_on_failure
+
+# TEST APPLICATION
+  test_app:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - install_awscli
+      - install_kubectl
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Wait for service to be ready
+          command: |
+            aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name wordpress-eks-stack-${CIRCLE_WORKFLOW_ID:0:7}-cluster
+            
+            kubectl get pods
+            kubectl get services
+            sleep 30
+            for attempt in {1..20}; do
+              EXTERNAL_IP=$(kubectl get service wordpress-service | awk '{print $4}' | tail -n1)
+              echo "Checking external IP: ${EXTERNAL_IP}"
+              if [ -n "${EXTERNAL_IP}" ] && [ -z $(echo "${EXTERNAL_IP}" | grep "pending") ]; then
+                break
+              fi
+              echo "Waiting for external IP to be ready: ${EXTERNAL_IP}"
+              sleep 10
+            done
+            sleep 180
+            curl -s --retry 10 "http://$EXTERNAL_IP" 
 
 # APPLICATION HEALTH CHECKS
   check_health_status:
@@ -457,6 +487,8 @@ workflows:
       # - build_app:
       #     requires: [get_rds_endpoint]      
       # - deploy_app:
-          # requires: [deploy_eks_stack, build_app]
+      #     requires: [deploy_eks_stack, build_app]
+      # - test_app:
+      #     reqiures: [deploy_app]
       # - check_health_status:
-      #     requires: [deploy_app]
+      #     requires: [test_app]
