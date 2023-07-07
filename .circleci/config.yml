@@ -267,7 +267,9 @@ jobs:
       - install_kubectl
       - attach_workspace:
           at: ~/
-# Replace the placeholders in the manifest with the intended values
+# To ensure flexibility and portability in this demo project, 
+# the placeholders within the manifest are substituted with the desired values. 
+# This approach avoids the need to hardcode the image name directly in the manifest file.
       - run:
           name: Create mysql-rds service manifest
           command: 
