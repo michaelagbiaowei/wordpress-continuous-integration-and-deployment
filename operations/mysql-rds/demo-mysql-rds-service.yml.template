@@ -4,7 +4,7 @@ metadata:
   name: mysql-service
 spec:
   type: ExternalName
-  externalName: ${DB_HOST}
+  externalName: "${RDS_DB_HOST}"
   ports:
   - port: 3306
     protocol: TCP

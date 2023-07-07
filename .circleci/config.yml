@@ -267,12 +267,33 @@ jobs:
       - install_kubectl
       - attach_workspace:
           at: ~/
+# Replace the placeholders in the manifest with the intended values
+      - run:
+          name: Create mysql-rds service manifest
+          command: 
+            cat operations/mysql-rds/demo-mysql-rds-service.yml.template |\
+               sed "s|RDS_DB_HOST|$DB_HSOT|g" > operations/mysql-rds/mysql-rds-service.yml
+
+      - run:
+          name: Create wordpress deployment manifest
+          command: |
+            VERSION=latest
+            cat operations/wordpress/demo-wordpress-deployment.yml.template |\
+               sed "s|DOCKER_USER|$DOCKER_USERNAME|g;\
+                s|DOCKER_IMAGE|$WORDPRESS_IMAGE|g;\
+                s|IMAGE_VERSION|$VERSION|g;\
+                s|RDS_DB_USERNAME|$DB_USERNAME|g;\
+                s|RDS_DB_PASSWORD|$DB_PASSWORD|g;\
+                s|RDS_DB_NAME|$DB_NAME|g" > operations/wordpress/wordpress-deployment.yml
+
       - run:
           name: Deloy to AWS EKS
           command: |
             aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name wordpress-eks-stack-${CIRCLE_WORKFLOW_ID:0:7}-cluster
-            kubectl apply -f operations/mysql-rds/
-            kubectl apply -f operations/wordpress/
+            kubectl apply -f operations/mysql-rds/mysql-rds-service.yml
+            kubectl apply -f operations/wordpress/wordpress-service.yml
+            kubectl apply -f operations/wordpress/wordpress-pvc.yml
+            kubectl apply -f operations/wordpress/wordpress-deployment.yml
             kubectl get deploymennts
             
       - notify_on_failure
