@@ -23,4 +23,30 @@ The primary goal of this project will be to accomplish the following:
 
 - Effectively utilize centralized structured logging to identify and diagnose critical server errors.
 
-To learn more about how to use the pipeline, see the ([instructions directory](https://github.com/michaelagbiaowei/wordpress-continuous-integration-and-deployment/tree/main/instructions))
+To learn more about the deployment stages of the wordpress application, see the detailed ([instructions directory](https://github.com/michaelagbiaowei/wordpress-continuous-integration-and-deployment/tree/main/instructions))
+
+## Built With
+
+- [Circle CI](www.circleci.com) - Cloud-based CI/CD Service
+- [Amazon AWS](https://aws.amazon.com/) - Cloud Services
+- [AWS CLI](https://aws.amazon.com/cli/) - Command-line tool for AWS
+- [CloudFormation](https://aws.amazon.com/cloudformation/) - Infrastructure as Code
+- [Kubernetes](https://kubernetes.io/) - Container Orchestration
+- [Prometheus](https://prometheus.io/) - Monitoring Tool
+- [Alertmanager](https://prometheus.io/docs/alerting/latest/overview/) - Alerting Tool
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
