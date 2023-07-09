@@ -274,14 +274,14 @@ jobs:
           name: Create mysql-rds service manifest
           command: 
             cat operations/mysql-rds/demo-mysql-rds-service.yml.template |\
-               sed "s|RDS_DB_HOST|$DB_HOST|g" > operations/mysql-rds/mysql-rds-service.yml
+              sed "s|RDS_DB_HOST|$DB_HOST|g" > operations/mysql-rds/mysql-rds-service.yml
 
       - run:
           name: Create wordpress deployment manifest
           command: |
             VERSION=latest
             cat operations/wordpress/demo-wordpress-deployment.yml.template |\
-               sed "s|DOCKER_USER|$DOCKER_USERNAME|g;\
+              sed "s|DOCKER_USER|$DOCKER_USERNAME|g;\
                 s|DOCKER_IMAGE|$WORDPRESS_IMAGE|g;\
                 s|IMAGE_VERSION|$VERSION|g;\
                 s|RDS_DB_USERNAME|$DB_USERNAME|g;\
@@ -400,7 +400,7 @@ jobs:
           command: |
             set -e
 
-            url="${URL}"
+            url="${LOADBALANCER_IP}"
 
             echo "Performing smoke test for WordPress app..."
 
