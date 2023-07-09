@@ -1,8 +1,8 @@
 ## **Instructions**
 
-1. [Test](instructions/test/README.md)
-2. [Local](instructions/local/README.md)
-3. [Production](instructions/production/README.md)
+1. [Test](test/README.md)
+2. [Local](local/README.md)
+3. [Production](production/README.md)
 
 
 
