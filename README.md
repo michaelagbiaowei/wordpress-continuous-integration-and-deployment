@@ -23,4 +23,4 @@ The primary goal of this project will be to accomplish the following:
 
 - Effectively utilize centralized structured logging to identify and diagnose critical server errors.
 
-To learn more about how to use the pipeline, see the ([instructions directory](https://github.com/michaelagbiaowei/wordpress-continuous-integration-and-deployment/tree/instructions))
+To learn more about how to use the pipeline, see the ([instructions directory](https://github.com/michaelagbiaowei/wordpress-continuous-integration-and-deployment/tree/main/instructions))
