@@ -6,25 +6,25 @@
       <a href="#prerequisites">prerequisites</a>
     </li>
     <li>
-      <a href="#Create Security Groups">Create Security Groups</a>
+      <a href="#create-security-groups">Create Security Groups</a>
       <ul>
-        <li><a href="#RDS Security Group">RDS Security Group</a></li>
-        <li><a href="#EC2 Security Group">EC2 Security Group</a></li>
+        <li><a href="#rds-security-group">RDS Security Group</a></li>
+        <li><a href="#ec2-security-group">EC2 Security Group</a></li>
       </ul>
-        <li><a href="#Create an RDS Instance">Create an RDS Instance</a></li>        
+        <li><a href="#Create-an-RDS-Instance">Create an RDS Instance</a></li>        
     </li>
-    <li><a href="#Create a Public EC2 Instance">Create an EC2 Instance</a></li>
+    <li><a href="#create-an-ec2-instance">Create an EC2 Instance</a></li>
       <ul>
-    <li><a href="#Connect to EC2 instance">Connect to EC2 instance</a></li>       
+    <li><a href="#connect-to-ec2-instance">Connect to EC2 instance</a></li>       
       </ul>
-    <li><a href="#Install Apache2 Webserver">Install Systsem Requirements</a></li>
+    <li><a href="#install-apache2-webserver">Install Systsem Requirements</a></li>
       <ul>
-        <li><a href="#Install Apache2">Install Apache2</a></li>
-        <li><a href="#Install php">Install php</a></li>
+        <li><a href="#install-apache2">Install Apache2</a></li>
+        <li><a href="#instal- php">Install php</a></li>
       </ul>
-    <li><a href="#Install WordPress">Install WordPress</a></li>
+    <li><a href="#install-wordpress">Install WordPress</a></li>
       <ul>
-        <li><a href="#Connect to RDS">Connect to RDS</a></li>
+        <li><a href="#connect-to-rds">Connect to RDS</a></li>
       </ul>
   </ol>
 </details>
