@@ -1,6 +1,6 @@
 <!-- CONTENTS -->
 <details>
-  <summary>Contents</summary>
+  <summary><b>Contents</b></summary>
   <ol>
     <li>
       <a href="#prerequisites">prerequisites</a>
